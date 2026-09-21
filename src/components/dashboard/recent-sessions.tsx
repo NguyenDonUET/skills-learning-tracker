@@ -7,16 +7,6 @@ import { LogSessionDialog } from "@/components/dashboard/log-session-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
 import { SkillColorDot } from "@/components/shared/skill-color-dot";
 import { Button } from "@/components/ui/button";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { formatDuration, formatShortDate } from "@/lib/format";
 import { useTrackerStore } from "@/store/tracker-store";
 import type { RecentSessionItem } from "@/types/skill";
@@ -30,7 +20,6 @@ export function RecentSessions({ sessions }: RecentSessionsProps) {
   const deleteSession = useTrackerStore((s) => s.deleteSession);
 
   const [editId, setEditId] = useState<string | null>(null);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const editSession = allSessions.find((s) => s.id === editId) ?? null;
 
@@ -96,7 +85,7 @@ export function RecentSessions({ sessions }: RecentSessionsProps) {
                   size="icon-sm"
                   className="size-11 text-error sm:size-8"
                   aria-label="Delete session"
-                  onClick={() => setDeleteId(session.id)}
+                  onClick={() => deleteSession(session.id)}
                 >
                   <Trash2 className="size-4" />
                 </Button>
@@ -113,35 +102,6 @@ export function RecentSessions({ sessions }: RecentSessionsProps) {
           if (!next) setEditId(null);
         }}
       />
-
-      <AlertDialog
-        open={Boolean(deleteId)}
-        onOpenChange={(next) => {
-          if (!next) setDeleteId(null);
-        }}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete this session?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This removes the session from your log. Streaks and hours will
-              update immediately.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              variant="destructive"
-              onClick={() => {
-                if (deleteId) deleteSession(deleteId);
-                setDeleteId(null);
-              }}
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </section>
   );
 }

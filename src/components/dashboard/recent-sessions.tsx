@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 
 import { LogSessionDialog } from "@/components/dashboard/log-session-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -16,6 +17,8 @@ type RecentSessionsProps = {
 };
 
 export function RecentSessions({ sessions }: RecentSessionsProps) {
+  const t = useTranslations("Recent");
+  const locale = useLocale();
   const allSessions = useTrackerStore((s) => s.sessions);
   const deleteSession = useTrackerStore((s) => s.deleteSession);
 
@@ -25,21 +28,21 @@ export function RecentSessions({ sessions }: RecentSessionsProps) {
 
   return (
     <section
-      aria-label="Recent sessions"
+      aria-label={t("aria")}
       className="bg-surface shadow-sm flex flex-col rounded-xl border border-border-subtle p-5 sm:p-6"
     >
       <div className="mb-4 flex items-center justify-between gap-3">
         <h2 className="font-heading text-lg font-semibold text-text-primary">
-          Recent sessions
+          {t("title")}
         </h2>
-        <span className="text-xs text-text-tertiary">Last 5</span>
+        <span className="text-xs text-text-tertiary">{t("last5")}</span>
       </div>
 
       {sessions.length === 0 ? (
         <EmptyState
           className="py-6"
-          title="No sessions yet"
-          description="Log your first practice session to get started."
+          title={t("emptyTitle")}
+          description={t("emptyDescription")}
         />
       ) : (
         <ul className="divide-border-subtle flex flex-col divide-y">
@@ -58,7 +61,7 @@ export function RecentSessions({ sessions }: RecentSessionsProps) {
                     {session.skillName}
                   </p>
                   <p className="text-xs text-text-tertiary">
-                    {formatShortDate(session.date)} ·{" "}
+                    {formatShortDate(session.date, locale)} ·{" "}
                     {formatDuration(session.durationMinutes)}
                   </p>
                 </div>
@@ -74,7 +77,7 @@ export function RecentSessions({ sessions }: RecentSessionsProps) {
                   variant="ghost"
                   size="icon-sm"
                   className="size-11 sm:size-8"
-                  aria-label="Edit session"
+                  aria-label={t("editSession")}
                   onClick={() => setEditId(session.id)}
                 >
                   <Pencil className="size-4" />
@@ -84,7 +87,7 @@ export function RecentSessions({ sessions }: RecentSessionsProps) {
                   variant="ghost"
                   size="icon-sm"
                   className="size-11 text-error sm:size-8"
-                  aria-label="Delete session"
+                  aria-label={t("deleteSession")}
                   onClick={() => deleteSession(session.id)}
                 >
                   <Trash2 className="size-4" />

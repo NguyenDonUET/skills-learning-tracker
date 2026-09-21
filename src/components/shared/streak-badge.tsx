@@ -1,4 +1,7 @@
+"use client";
+
 import { Flame } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
 
@@ -15,8 +18,13 @@ export function StreakBadge({
   size = "md",
   className,
 }: StreakBadgeProps) {
+  const t = useTranslations("Streak");
   const label =
-    days === 1 ? "1-day streak" : days === 0 ? "No streak" : `${days}-day streak`;
+    days === 1
+      ? t("oneDay")
+      : days === 0
+        ? t("none")
+        : t("days", { count: days });
 
   return (
     <span
@@ -30,11 +38,7 @@ export function StreakBadge({
         status === "broken" && "text-text-tertiary",
         className,
       )}
-      title={
-        status === "at-risk"
-          ? "Streak at risk — practice today to keep it alive"
-          : undefined
-      }
+      title={status === "at-risk" ? t("atRisk") : undefined}
     >
       <Flame
         className={cn(

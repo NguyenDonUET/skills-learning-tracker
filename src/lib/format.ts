@@ -10,9 +10,9 @@ export function formatDuration(minutes: number): string {
   return m === 0 ? `${h}h` : `${h}h ${m}m`;
 }
 
-export function formatShortDate(isoDate: string): string {
+export function formatShortDate(isoDate: string, locale = "en"): string {
   const date = new Date(`${isoDate}T12:00:00`);
-  return date.toLocaleDateString(undefined, {
+  return date.toLocaleDateString(locale, {
     month: "short",
     day: "numeric",
   });

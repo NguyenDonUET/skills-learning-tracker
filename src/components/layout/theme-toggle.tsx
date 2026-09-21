@@ -1,12 +1,14 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
 export function ThemeToggle() {
+  const t = useTranslations("Theme");
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -23,7 +25,7 @@ export function ThemeToggle() {
         variant="ghost"
         size="icon"
         className="size-11"
-        aria-label="Toggle color theme"
+        aria-label={t("toggle")}
         disabled
       >
         <Moon className="size-5" aria-hidden />
@@ -39,7 +41,7 @@ export function ThemeToggle() {
       variant="ghost"
       size="icon"
       className="size-11"
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      aria-label={isDark ? t("toLight") : t("toDark")}
       onClick={() => setTheme(isDark ? "light" : "dark")}
     >
       {isDark ? (

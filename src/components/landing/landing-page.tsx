@@ -1,43 +1,32 @@
-import Link from "next/link";
+"use client";
+
 import {
   Flame,
   Layers,
   NotebookPen,
   Target,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { ProductShowcase } from "@/components/landing/product-showcase";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation";
 
-const FEATURES = [
-  {
-    icon: Flame,
-    title: "Streaks that keep you honest",
-    description:
-      "Current and longest streaks per skill — plus a gentle nudge when today's practice is still open.",
-  },
-  {
-    icon: Target,
-    title: "Progress you can see",
-    description:
-      "Progress rings for weekly or total goals, hours-first when you're just exploring a skill.",
-  },
-  {
-    icon: Layers,
-    title: "Every skill in one place",
-    description:
-      "Juggle Spanish, guitar, and TypeScript on a single bento dashboard without hopping apps.",
-  },
-  {
-    icon: NotebookPen,
-    title: "Log a session in seconds",
-    description:
-      "Duration presets, flexible time input, optional notes — then watch the dashboard update instantly.",
-  },
-] as const;
+const FEATURE_ICONS = [Flame, Target, Layers, NotebookPen] as const;
 
 export function LandingPage() {
+  const t = useTranslations("Landing");
+  const tNav = useTranslations("Nav");
+
+  const features = [
+    { icon: FEATURE_ICONS[0], title: t("feature1Title"), description: t("feature1Desc") },
+    { icon: FEATURE_ICONS[1], title: t("feature2Title"), description: t("feature2Desc") },
+    { icon: FEATURE_ICONS[2], title: t("feature3Title"), description: t("feature3Desc") },
+    { icon: FEATURE_ICONS[3], title: t("feature4Title"), description: t("feature4Desc") },
+  ];
+
   return (
     <div className="bg-bg-primary relative flex flex-1 flex-col overflow-hidden">
       <div
@@ -50,15 +39,16 @@ export function LandingPage() {
           href="/"
           className="font-heading text-lg font-bold tracking-tight text-text-primary"
         >
-          Skills Learning Tracker
+          {tNav("brandFull")}
         </Link>
         <div className="flex items-center gap-2">
+          <LanguageSwitcher />
           <ThemeToggle />
           <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-            <Link href="/dashboard">Try as Guest</Link>
+            <Link href="/dashboard">{t("tryGuest")}</Link>
           </Button>
           <Button asChild size="sm">
-            <Link href="/dashboard">Continue with Google</Link>
+            <Link href="/dashboard">{t("continueGoogle")}</Link>
           </Button>
         </div>
       </header>
@@ -67,18 +57,17 @@ export function LandingPage() {
         <section className="mx-auto grid w-full max-w-page items-center gap-12 px-6 pt-8 pb-16 lg:grid-cols-2 lg:gap-16 lg:pt-14 lg:pb-24">
           <div className="flex flex-col items-start text-left">
             <p className="font-heading mb-4 text-sm font-semibold tracking-wide text-accent uppercase">
-              Skills Learning Tracker
+              {t("eyebrow")}
             </p>
             <h1 className="font-heading max-w-xl text-3xl font-bold leading-tight text-text-primary">
-              See every hour you&apos;ve invested in becoming better.
+              {t("headline")}
             </h1>
             <p className="mt-5 max-w-md text-base text-text-secondary sm:text-lg">
-              Log practice, protect your streaks, and watch consistency show up
-              as rings, hours, and a living heatmap — Strava for learning.
+              {t("subhead")}
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Button asChild size="lg" className="min-h-11 px-5">
-                <Link href="/dashboard">Continue with Google</Link>
+                <Link href="/dashboard">{t("continueGoogle")}</Link>
               </Button>
               <Button
                 asChild
@@ -86,13 +75,10 @@ export function LandingPage() {
                 variant="outline"
                 className="min-h-11 px-5"
               >
-                <Link href="/dashboard">Try as Guest</Link>
+                <Link href="/dashboard">{t("tryGuest")}</Link>
               </Button>
             </div>
-            <p className="mt-3 text-xs text-text-tertiary">
-              Guest mode explores the full demo. Google sign-in wires up in a
-              later phase.
-            </p>
+            <p className="mt-3 text-xs text-text-tertiary">{t("guestNote")}</p>
           </div>
 
           <ProductShowcase />
@@ -108,16 +94,15 @@ export function LandingPage() {
                 id="features-heading"
                 className="font-heading text-2xl font-bold text-text-primary sm:text-3xl"
               >
-                Built for deliberate practice
+                {t("featuresHeading")}
               </h2>
               <p className="mt-3 text-base text-text-secondary">
-                Motivating without guilt trips — clear proof that showing up
-                compounds.
+                {t("featuresSubhead")}
               </p>
             </div>
 
             <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {FEATURES.map(({ icon: Icon, title, description }) => (
+              {features.map(({ icon: Icon, title, description }) => (
                 <li
                   key={title}
                   className="bg-surface flex flex-col gap-3 rounded-xl border border-border-subtle p-5 shadow-sm"
@@ -137,15 +122,14 @@ export function LandingPage() {
 
         <section className="mx-auto w-full max-w-page px-6 py-16 text-center lg:py-20">
           <h2 className="font-heading text-2xl font-bold text-text-primary sm:text-3xl">
-            Ready to make practice visible?
+            {t("ctaHeading")}
           </h2>
           <p className="mx-auto mt-3 max-w-md text-base text-text-secondary">
-            Jump into the guest dashboard with sample skills and sessions — no
-            account required.
+            {t("ctaSubhead")}
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Button asChild size="lg" className="min-h-11 px-5">
-              <Link href="/dashboard">Try as Guest</Link>
+              <Link href="/dashboard">{t("tryGuest")}</Link>
             </Button>
             <Button
               asChild
@@ -153,14 +137,14 @@ export function LandingPage() {
               variant="outline"
               className="min-h-11 px-5"
             >
-              <Link href="/dashboard">Continue with Google</Link>
+              <Link href="/dashboard">{t("continueGoogle")}</Link>
             </Button>
           </div>
         </section>
       </main>
 
       <footer className="border-border-subtle relative z-10 border-t px-6 py-6 text-center text-xs text-text-tertiary">
-        Skills Learning Tracker · Frontend Mentor Product Challenge
+        {t("footer")}
       </footer>
     </div>
   );

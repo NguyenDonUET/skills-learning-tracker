@@ -1,3 +1,7 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+
 import { cn } from "@/lib/utils";
 import type { WeekBucket } from "@/lib/trends";
 
@@ -8,11 +12,12 @@ type SkillTrendsProps = {
 };
 
 export function SkillTrends({ weeks, accentColor, className }: SkillTrendsProps) {
+  const t = useTranslations("Trends");
   const maxHours = Math.max(...weeks.map((w) => w.hours), 0.1);
 
   return (
     <section
-      aria-label="Weekly practice trend"
+      aria-label={t("aria")}
       className={cn(
         "bg-surface flex flex-col gap-4 rounded-xl border border-border-subtle p-5 shadow-sm sm:p-6",
         className,
@@ -20,16 +25,23 @@ export function SkillTrends({ weeks, accentColor, className }: SkillTrendsProps)
     >
       <div>
         <h2 className="font-heading text-lg font-semibold text-text-primary">
-          Weekly trend
+          {t("title")}
         </h2>
         <p className="mt-0.5 text-sm text-text-tertiary">
-          Hours practiced per week (last {weeks.length} weeks)
+          {t("subtitle", { count: weeks.length })}
         </p>
       </div>
 
-      <div className="flex h-36 items-end gap-1.5 sm:gap-2" role="img" aria-label="Bar chart of weekly hours">
+      <div
+        className="flex h-36 items-end gap-1.5 sm:gap-2"
+        role="img"
+        aria-label={t("chartAria")}
+      >
         {weeks.map((week) => {
-          const heightPct = Math.max(week.hours === 0 ? 4 : 8, (week.hours / maxHours) * 100);
+          const heightPct = Math.max(
+            week.hours === 0 ? 4 : 8,
+            (week.hours / maxHours) * 100,
+          );
           return (
             <div
               key={week.weekStart}

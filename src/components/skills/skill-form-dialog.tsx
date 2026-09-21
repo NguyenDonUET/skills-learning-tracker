@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -39,6 +40,7 @@ export function SkillFormDialog({
   open: controlledOpen,
   onOpenChange,
 }: SkillFormDialogProps) {
+  const t = useTranslations("SkillForm");
   const addSkill = useTrackerStore((s) => s.addSkill);
   const updateSkill = useTrackerStore((s) => s.updateSkill);
 
@@ -74,7 +76,7 @@ export function SkillFormDialog({
   function handleSave() {
     const trimmed = name.trim();
     if (!trimmed) {
-      setError("Name is required");
+      setError(t("nameRequired"));
       return;
     }
 
@@ -82,7 +84,7 @@ export function SkillFormDialog({
     if (goalEnabled) {
       const hours = Number(goalHours);
       if (!Number.isFinite(hours) || hours <= 0) {
-        setError("Goal hours must be a positive number");
+        setError(t("goalHoursPositive"));
         return;
       }
       goal = { type: goalType, targetHours: hours };
@@ -105,31 +107,29 @@ export function SkillFormDialog({
       ) : null}
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{isEdit ? "Edit skill" : "Add a skill"}</DialogTitle>
-          <DialogDescription>
-            Track anything you&apos;re practicing — languages, instruments, code.
-          </DialogDescription>
+          <DialogTitle>{isEdit ? t("editTitle") : t("addTitle")}</DialogTitle>
+          <DialogDescription>{t("description")}</DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-col gap-4 py-1">
           <div className="space-y-2">
-            <Label htmlFor="skill-name">Name</Label>
+            <Label htmlFor="skill-name">{t("name")}</Label>
             <Input
               id="skill-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Spanish, Guitar, TypeScript…"
+              placeholder={t("namePlaceholder")}
             />
           </div>
 
           <div className="space-y-2">
-            <Label>Color</Label>
+            <Label>{t("color")}</Label>
             <div className="flex flex-wrap gap-2">
               {SKILL_COLORS.map((c) => (
                 <button
                   key={c}
                   type="button"
-                  aria-label={`Color ${c}`}
+                  aria-label={t("colorAria", { color: c })}
                   onClick={() => setColor(c)}
                   className={cn(
                     "size-9 rounded-full border-2 transition-transform",
@@ -151,7 +151,7 @@ export function SkillFormDialog({
                 onChange={(e) => setGoalEnabled(e.target.checked)}
                 className="size-4 accent-[var(--color-accent)]"
               />
-              Set a practice goal
+              {t("setGoal")}
             </label>
             {goalEnabled ? (
               <div className="flex flex-wrap gap-3">
@@ -161,12 +161,12 @@ export function SkillFormDialog({
                     setGoalType(value as "weekly" | "total")
                   }
                 >
-                  <SelectTrigger className="w-40" aria-label="Goal type">
+                  <SelectTrigger className="w-40" aria-label={t("goalType")}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="weekly">Hours / week</SelectItem>
-                    <SelectItem value="total">Total hours</SelectItem>
+                    <SelectItem value="weekly">{t("hoursPerWeek")}</SelectItem>
+                    <SelectItem value="total">{t("totalHours")}</SelectItem>
                   </SelectContent>
                 </Select>
                 <Input
@@ -176,7 +176,7 @@ export function SkillFormDialog({
                   className="w-28"
                   value={goalHours}
                   onChange={(e) => setGoalHours(e.target.value)}
-                  aria-label="Target hours"
+                  aria-label={t("targetHours")}
                 />
               </div>
             ) : null}
@@ -191,7 +191,7 @@ export function SkillFormDialog({
 
         <DialogFooter>
           <Button type="button" onClick={handleSave}>
-            {isEdit ? "Save changes" : "Add skill"}
+            {isEdit ? t("saveChanges") : t("addSkill")}
           </Button>
         </DialogFooter>
       </DialogContent>

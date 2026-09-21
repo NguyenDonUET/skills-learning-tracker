@@ -45,16 +45,27 @@ export function goalProgress(
 
 export type GoalPaceStatus = "ahead" | "on-track" | "behind" | "complete";
 
+export type GoalPaceMessage =
+  | "weeklyComplete"
+  | "totalComplete"
+  | "ahead"
+  | "behind"
+  | "onTrack"
+  | "remainingStart"
+  | "remainingPace";
+
 export type GoalPace = {
   status: GoalPaceStatus;
-  label: string;
+  message: GoalPaceMessage;
   loggedHours: number;
   targetHours: number;
   remainingHours: number;
+  daysNeeded: number | null;
 };
 
 /**
  * Pace vs goal: weekly uses day-of-week expected share; total is simple remaining.
+ * UI copy is resolved via i18n from `message` + numeric fields.
  */
 export function goalPace(
   skill: Skill,
@@ -78,13 +89,11 @@ export function goalPace(
   if (loggedHours >= targetHours) {
     return {
       status: "complete",
-      label:
-        goal.type === "weekly"
-          ? "Weekly goal complete"
-          : "Goal complete — nice work",
+      message: goal.type === "weekly" ? "weeklyComplete" : "totalComplete",
       loggedHours,
       targetHours,
       remainingHours: 0,
+      daysNeeded: null,
     };
   }
 
@@ -97,27 +106,30 @@ export function goalPace(
     if (delta >= 0.5) {
       return {
         status: "ahead",
-        label: `Ahead of pace · ${remainingHours}h left this week`,
+        message: "ahead",
         loggedHours,
         targetHours,
         remainingHours,
+        daysNeeded: null,
       };
     }
     if (delta <= -0.5) {
       return {
         status: "behind",
-        label: `Behind pace · ${remainingHours}h left this week`,
+        message: "behind",
         loggedHours,
         targetHours,
         remainingHours,
+        daysNeeded: null,
       };
     }
     return {
       status: "on-track",
-      label: `On track · ${remainingHours}h left this week`,
+      message: "onTrack",
       loggedHours,
       targetHours,
       remainingHours,
+      daysNeeded: null,
     };
   }
 
@@ -129,12 +141,10 @@ export function goalPace(
 
   return {
     status: rate > 0 ? "on-track" : "behind",
-    label:
-      daysNeeded == null
-        ? `${remainingHours}h remaining — log a session to start pacing`
-        : `${remainingHours}h remaining · ~${daysNeeded} days at current pace`,
+    message: daysNeeded == null ? "remainingStart" : "remainingPace",
     loggedHours,
     targetHours,
     remainingHours,
+    daysNeeded,
   };
 }

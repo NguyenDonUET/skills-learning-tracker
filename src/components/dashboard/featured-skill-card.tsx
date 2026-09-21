@@ -1,8 +1,11 @@
-import Link from "next/link";
+"use client";
+
+import { useTranslations } from "next-intl";
 
 import { ProgressRing } from "@/components/shared/progress-ring";
 import { SkillColorDot } from "@/components/shared/skill-color-dot";
 import { StreakBadge } from "@/components/shared/streak-badge";
+import { Link } from "@/i18n/navigation";
 import type { SkillSummary } from "@/types/skill";
 import { formatHours } from "@/lib/format";
 
@@ -11,6 +14,7 @@ type FeaturedSkillCardProps = {
 };
 
 export function FeaturedSkillCard({ summary }: FeaturedSkillCardProps) {
+  const t = useTranslations("Dashboard");
   const { skill, totalHours, currentStreak, streakStatus, goalProgress, sessionCount } =
     summary;
   const percent =
@@ -21,7 +25,7 @@ export function FeaturedSkillCard({ summary }: FeaturedSkillCardProps) {
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <p className="text-xs font-medium tracking-wide text-text-tertiary uppercase">
-            Featured skill
+            {t("featuredSkill")}
           </p>
           <h2 className="font-heading mt-1 flex items-center gap-2 text-xl font-semibold text-text-primary">
             <SkillColorDot color={skill.color} size="md" />
@@ -49,7 +53,7 @@ export function FeaturedSkillCard({ summary }: FeaturedSkillCardProps) {
                 {percent}%
               </p>
               <p className="text-xs text-text-tertiary">
-                {skill.goal?.type === "weekly" ? "of weekly goal" : "of goal"}
+                {skill.goal?.type === "weekly" ? t("ofWeeklyGoal") : t("ofGoal")}
               </p>
             </div>
           </ProgressRing>
@@ -58,19 +62,19 @@ export function FeaturedSkillCard({ summary }: FeaturedSkillCardProps) {
             <p className="font-heading text-3xl font-bold text-text-primary">
               {formatHours(totalHours)}
             </p>
-            <p className="text-sm text-text-secondary">total hours</p>
+            <p className="text-sm text-text-secondary">{t("totalHours")}</p>
           </div>
         )}
 
         <dl className="grid w-full max-w-xs grid-cols-2 gap-4 sm:w-auto">
           <div>
-            <dt className="text-xs text-text-tertiary">Hours</dt>
+            <dt className="text-xs text-text-tertiary">{t("hours")}</dt>
             <dd className="font-heading text-2xl font-bold text-text-primary">
               {formatHours(totalHours)}
             </dd>
           </div>
           <div>
-            <dt className="text-xs text-text-tertiary">Sessions</dt>
+            <dt className="text-xs text-text-tertiary">{t("sessions")}</dt>
             <dd className="font-heading text-2xl font-bold text-text-primary">
               {sessionCount}
             </dd>

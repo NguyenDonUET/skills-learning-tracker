@@ -1,4 +1,7 @@
+"use client";
+
 import { Flame, Clock, ListChecks } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { StreakBadge } from "@/components/shared/streak-badge";
 import { formatHours } from "@/lib/format";
@@ -16,22 +19,24 @@ export function OverallStats({
   currentStreak,
   streakStatus,
 }: OverallStatsProps) {
+  const t = useTranslations("Dashboard");
+
   return (
     <section
-      aria-label="Overall progress"
+      aria-label={t("overallProgress")}
       className="bg-surface shadow-sm grid grid-cols-3 gap-3 rounded-xl border border-border-subtle p-4 sm:gap-6 sm:p-6"
     >
       <div className="flex flex-col gap-1">
         <span className="inline-flex items-center gap-1.5 text-xs text-text-tertiary">
           <Flame className="size-3.5 text-streak" aria-hidden />
-          Streak
+          {t("streak")}
         </span>
         <StreakBadge days={currentStreak} status={streakStatus} size="lg" />
       </div>
       <div className="flex flex-col gap-1">
         <span className="inline-flex items-center gap-1.5 text-xs text-text-tertiary">
           <Clock className="size-3.5" aria-hidden />
-          Total hours
+          {t("totalHoursLabel")}
         </span>
         <p className="font-heading text-2xl font-bold text-text-primary sm:text-3xl">
           {formatHours(totalHours)}
@@ -40,7 +45,7 @@ export function OverallStats({
       <div className="flex flex-col gap-1">
         <span className="inline-flex items-center gap-1.5 text-xs text-text-tertiary">
           <ListChecks className="size-3.5" aria-hidden />
-          Sessions
+          {t("sessions")}
         </span>
         <p className="font-heading text-2xl font-bold text-text-primary sm:text-3xl">
           {sessionCount}

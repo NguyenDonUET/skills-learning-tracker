@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { SkillFormDialog } from "@/components/skills/skill-form-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -19,12 +19,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Link } from "@/i18n/navigation";
 import { useDashboardData } from "@/hooks/use-dashboard-data";
 import { formatHours } from "@/lib/format";
 import { useTrackerStore } from "@/store/tracker-store";
 import type { Skill } from "@/types/skill";
 
 export default function SkillsPage() {
+  const t = useTranslations("Skills");
   const { summaries } = useDashboardData();
   const deleteSkill = useTrackerStore((s) => s.deleteSkill);
 
@@ -36,17 +38,15 @@ export default function SkillsPage() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="font-heading text-2xl font-bold text-text-primary sm:text-3xl">
-            Skills
+            {t("title")}
           </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            Manage the skills you&apos;re tracking.
-          </p>
+          <p className="mt-1 text-sm text-text-secondary">{t("subtitle")}</p>
         </div>
         <SkillFormDialog
           trigger={
             <Button size="lg">
               <Plus className="size-4" />
-              Add skill
+              {t("addSkill")}
             </Button>
           }
         />
@@ -55,14 +55,14 @@ export default function SkillsPage() {
       {summaries.length === 0 ? (
         <EmptyState
           className="bg-surface rounded-xl border border-border-subtle"
-          title="No skills yet"
-          description="Add your first skill to start tracking."
+          title={t("emptyTitle")}
+          description={t("emptyDescription")}
           action={
             <SkillFormDialog
               trigger={
                 <Button size="lg">
                   <Plus className="size-4" />
-                  Add skill
+                  {t("addSkill")}
                 </Button>
               }
             />
@@ -86,8 +86,10 @@ export default function SkillsPage() {
                       {summary.skill.name}
                     </p>
                     <p className="text-sm text-text-secondary">
-                      {formatHours(summary.totalHours)} hrs ·{" "}
-                      {summary.sessionCount} sessions
+                      {t("hoursSessions", {
+                        hours: formatHours(summary.totalHours),
+                        count: summary.sessionCount,
+                      })}
                     </p>
                   </div>
                 </Link>
@@ -106,7 +108,7 @@ export default function SkillsPage() {
                   onClick={() => setEditSkill(summary.skill)}
                 >
                   <Pencil className="size-3.5" />
-                  Edit
+                  {t("edit")}
                 </Button>
                 <Button
                   type="button"
@@ -116,7 +118,7 @@ export default function SkillsPage() {
                   onClick={() => setDeleteTarget(summary.skill)}
                 >
                   <Trash2 className="size-3.5" />
-                  Delete
+                  {t("delete")}
                 </Button>
               </div>
             </li>
@@ -141,14 +143,14 @@ export default function SkillsPage() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              Delete {deleteTarget?.name}?
+              {t("deleteTitle", { name: deleteTarget?.name ?? "" })}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              This permanently removes the skill and all of its sessions.
+              {t("deleteDescription")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
             <AlertDialogAction
               variant="destructive"
               onClick={() => {
@@ -156,7 +158,7 @@ export default function SkillsPage() {
                 setDeleteTarget(null);
               }}
             >
-              Delete skill
+              {t("deleteSkill")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

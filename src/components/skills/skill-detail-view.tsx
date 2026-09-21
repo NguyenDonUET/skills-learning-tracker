@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo } from "react";
 import { Pencil } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 
 import { PracticeHeatmap } from "@/components/dashboard/practice-heatmap";
 import { LogSessionDialog } from "@/components/dashboard/log-session-dialog";
@@ -14,6 +14,7 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { SkillColorDot } from "@/components/shared/skill-color-dot";
 import { StreakBadge } from "@/components/shared/streak-badge";
 import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation";
 import { todayDateString } from "@/lib/dates";
 import { formatDuration, formatHours } from "@/lib/format";
 import { goalPace } from "@/lib/goals";
@@ -27,6 +28,8 @@ type SkillDetailViewProps = {
 };
 
 export function SkillDetailView({ summary }: SkillDetailViewProps) {
+  const t = useTranslations("Skills");
+  const locale = useLocale();
   const sessions = useTrackerStore((s) => s.sessions);
   const { skill } = summary;
   const today = todayDateString();
@@ -52,8 +55,8 @@ export function SkillDetailView({ summary }: SkillDetailViewProps) {
   );
 
   const trends = useMemo(
-    () => weeklyHoursTrend(sessions, skill.id, 8, today),
-    [sessions, skill.id, today],
+    () => weeklyHoursTrend(sessions, skill.id, 8, today, locale),
+    [sessions, skill.id, today, locale],
   );
 
   const avgMinutes = useMemo(
@@ -64,7 +67,7 @@ export function SkillDetailView({ summary }: SkillDetailViewProps) {
   return (
     <div className="mx-auto flex w-full max-w-detail flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8">
       <Button variant="ghost" asChild className="w-fit px-0">
-        <Link href="/dashboard">← Back to dashboard</Link>
+        <Link href="/dashboard">{t("backToDashboard")}</Link>
       </Button>
 
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -87,7 +90,7 @@ export function SkillDetailView({ summary }: SkillDetailViewProps) {
             trigger={
               <Button type="button" variant="outline" size="lg">
                 <Pencil className="size-4" />
-                Edit skill
+                {t("editSkill")}
               </Button>
             }
           />
@@ -99,12 +102,18 @@ export function SkillDetailView({ summary }: SkillDetailViewProps) {
       </div>
 
       <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        <Stat label="Hours" value={formatHours(summary.totalHours)} />
-        <Stat label="Sessions" value={String(summary.sessionCount)} />
-        <Stat label="Current streak" value={String(summary.currentStreak)} />
-        <Stat label="Longest streak" value={String(summary.longestStreak)} />
+        <Stat label={t("statHours")} value={formatHours(summary.totalHours)} />
+        <Stat label={t("statSessions")} value={String(summary.sessionCount)} />
         <Stat
-          label="Avg session"
+          label={t("statCurrentStreak")}
+          value={String(summary.currentStreak)}
+        />
+        <Stat
+          label={t("statLongestStreak")}
+          value={String(summary.longestStreak)}
+        />
+        <Stat
+          label={t("statAvgSession")}
           value={avgMinutes == null ? "—" : formatDuration(avgMinutes)}
         />
       </dl>
@@ -121,8 +130,8 @@ export function SkillDetailView({ summary }: SkillDetailViewProps) {
       {skillSessions.length === 0 ? (
         <EmptyState
           className="bg-surface rounded-xl border border-border-subtle"
-          title="No sessions logged yet"
-          description="Start practicing and log your first session to fill in the heatmap and trends."
+          title={t("emptySessionsTitle")}
+          description={t("emptySessionsDescription")}
           action={
             <LogSessionDialog
               defaultSkillId={skill.id}

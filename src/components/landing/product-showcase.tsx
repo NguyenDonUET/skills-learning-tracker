@@ -1,3 +1,7 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+
 import {
   HeatmapCell,
   HEATMAP_LEVEL_CLASS,
@@ -23,6 +27,8 @@ const SHOWCASE_SKILLS = [
 ] as const;
 
 export function ProductShowcase() {
+  const t = useTranslations("Landing");
+
   return (
     <div
       aria-hidden
@@ -35,7 +41,7 @@ export function ProductShowcase() {
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-xs font-medium tracking-wide text-text-tertiary uppercase">
-              Featured skill
+              {t("showcaseFeatured")}
             </p>
             <p className="font-heading mt-1 flex items-center gap-2 text-lg font-semibold text-text-primary">
               <SkillColorDot color={SHOWCASE_SKILLS[0].color} size="md" />
@@ -56,7 +62,9 @@ export function ProductShowcase() {
               <p className="font-heading text-xl font-bold text-text-primary">
                 75%
               </p>
-              <p className="text-[0.65rem] text-text-tertiary">weekly goal</p>
+              <p className="text-[0.65rem] text-text-tertiary">
+                {t("showcaseWeeklyGoal")}
+              </p>
             </div>
           </ProgressRing>
 
@@ -80,7 +88,7 @@ export function ProductShowcase() {
 
         <div>
           <p className="mb-2 text-xs font-medium text-text-tertiary">
-            Practice activity
+            {t("showcaseActivity")}
           </p>
           <div
             className="grid w-full max-w-xs gap-1"
@@ -100,7 +108,7 @@ export function ProductShowcase() {
             ))}
           </div>
           <div className="mt-2 flex items-center justify-end gap-1.5 text-xs text-text-tertiary">
-            <span>Less</span>
+            <span>{t("less")}</span>
             {([0, 1, 2, 3, 4] as HeatmapLevel[]).map((level) => (
               <span
                 key={level}
@@ -110,7 +118,7 @@ export function ProductShowcase() {
                 )}
               />
             ))}
-            <span>More</span>
+            <span>{t("more")}</span>
           </div>
         </div>
       </div>

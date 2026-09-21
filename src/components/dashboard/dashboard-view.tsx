@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { FeaturedSkillCard } from "@/components/dashboard/featured-skill-card";
 import { LogSessionDialog } from "@/components/dashboard/log-session-dialog";
@@ -17,6 +18,7 @@ import { todayDateString } from "@/lib/dates";
 import { buildHeatmap } from "@/lib/heatmap";
 
 export function DashboardView() {
+  const t = useTranslations("Dashboard");
   const {
     skills,
     sessions,
@@ -44,14 +46,14 @@ export function DashboardView() {
     return (
       <div className="mx-auto flex w-full max-w-page flex-col px-4 py-8 sm:px-6">
         <EmptyState
-          title="Add your first skill"
-          description="Add your first skill to start tracking your practice. What are you learning?"
+          title={t("emptyTitle")}
+          description={t("emptyDescription")}
           action={
             <SkillFormDialog
               trigger={
                 <Button size="lg">
                   <Plus className="size-4" />
-                  Add skill
+                  {t("addSkill")}
                 </Button>
               }
             />
@@ -66,18 +68,16 @@ export function DashboardView() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="font-heading text-2xl font-bold text-text-primary sm:text-3xl">
-            Dashboard
+            {t("title")}
           </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            Your practice at a glance.
-          </p>
+          <p className="mt-1 text-sm text-text-secondary">{t("subtitle")}</p>
         </div>
         <div className="hidden flex-wrap items-center gap-2 sm:flex">
           <SkillFormDialog
             trigger={
               <Button type="button" variant="outline" size="lg">
                 <Plus className="size-4" />
-                Add skill
+                {t("addSkill")}
               </Button>
             }
           />

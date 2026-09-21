@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 
 import { LogSessionDialog } from "@/components/dashboard/log-session-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -19,6 +20,8 @@ export function SkillSessionHistory({
   sessions,
   skillName,
 }: SkillSessionHistoryProps) {
+  const t = useTranslations("History");
+  const locale = useLocale();
   const deleteSession = useTrackerStore((s) => s.deleteSession);
   const [editId, setEditId] = useState<string | null>(null);
 
@@ -35,23 +38,23 @@ export function SkillSessionHistory({
 
   return (
     <section
-      aria-label="Session history"
+      aria-label={t("aria")}
       className="bg-surface flex flex-col rounded-xl border border-border-subtle p-5 shadow-sm sm:p-6"
     >
       <div className="mb-4 flex items-center justify-between gap-3">
         <h2 className="font-heading text-lg font-semibold text-text-primary">
-          Session history
+          {t("title")}
         </h2>
         <span className="text-xs text-text-tertiary">
-          {sorted.length} total
+          {t("total", { count: sorted.length })}
         </span>
       </div>
 
       {sorted.length === 0 ? (
         <EmptyState
           className="py-6"
-          title="No sessions logged yet"
-          description={`Start practicing ${skillName} and log your first session.`}
+          title={t("emptyTitle")}
+          description={t("emptyDescription", { skillName })}
         />
       ) : (
         <ul className="divide-border-subtle flex max-h-[28rem] flex-col divide-y overflow-y-auto">
@@ -63,7 +66,7 @@ export function SkillSessionHistory({
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
                   <p className="text-sm font-medium text-text-primary">
-                    {formatShortDate(session.date)}
+                    {formatShortDate(session.date, locale)}
                   </p>
                   <p className="text-xs tabular-nums text-text-tertiary">
                     {formatDuration(session.durationMinutes)}
@@ -75,7 +78,7 @@ export function SkillSessionHistory({
                   </p>
                 ) : (
                   <p className="mt-0.5 text-sm text-text-tertiary italic">
-                    No notes
+                    {t("noNotes")}
                   </p>
                 )}
               </div>
@@ -85,7 +88,7 @@ export function SkillSessionHistory({
                   variant="ghost"
                   size="icon-sm"
                   className="size-11 sm:size-8"
-                  aria-label="Edit session"
+                  aria-label={t("editSession")}
                   onClick={() => setEditId(session.id)}
                 >
                   <Pencil className="size-4" />
@@ -95,7 +98,7 @@ export function SkillSessionHistory({
                   variant="ghost"
                   size="icon-sm"
                   className="size-11 text-error sm:size-8"
-                  aria-label="Delete session"
+                  aria-label={t("deleteSession")}
                   onClick={() => deleteSession(session.id)}
                 >
                   <Trash2 className="size-4" />

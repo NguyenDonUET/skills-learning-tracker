@@ -15,6 +15,7 @@ export function weeklyHoursTrend(
   skillId: string,
   weeks = 8,
   today: string,
+  locale = "en",
 ): WeekBucket[] {
   const { start: thisWeekStart } = weekRangeContaining(today);
   const buckets: WeekBucket[] = [];
@@ -30,7 +31,7 @@ export function weeklyHoursTrend(
       .reduce((sum, s) => sum + s.durationMinutes, 0);
 
     const startDate = new Date(`${weekStart}T12:00:00`);
-    const label = startDate.toLocaleDateString(undefined, {
+    const label = startDate.toLocaleDateString(locale, {
       month: "short",
       day: "numeric",
     });

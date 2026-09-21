@@ -1,8 +1,11 @@
-import Link from "next/link";
+"use client";
+
+import { useTranslations } from "next-intl";
 
 import { ProgressRing } from "@/components/shared/progress-ring";
 import { SkillColorDot } from "@/components/shared/skill-color-dot";
 import { StreakBadge } from "@/components/shared/streak-badge";
+import { Link } from "@/i18n/navigation";
 import { formatHours } from "@/lib/format";
 import type { SkillSummary } from "@/types/skill";
 
@@ -11,6 +14,7 @@ type SkillCardProps = {
 };
 
 export function SkillCard({ summary }: SkillCardProps) {
+  const t = useTranslations("Dashboard");
   const { skill, totalHours, currentStreak, streakStatus, goalProgress } = summary;
 
   return (
@@ -42,7 +46,7 @@ export function SkillCard({ summary }: SkillCardProps) {
           <p className="font-heading text-2xl font-bold text-text-primary">
             {formatHours(totalHours)}
             <span className="ml-1 text-sm font-medium text-text-tertiary">
-              hrs
+              {t("hrs")}
             </span>
           </p>
           <StreakBadge days={currentStreak} status={streakStatus} size="sm" />

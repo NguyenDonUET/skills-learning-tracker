@@ -1,11 +1,17 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function DashboardSkeleton() {
+  const t = useTranslations("Loading");
+
   return (
     <div
       className="mx-auto flex w-full max-w-page flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8"
       aria-busy
-      aria-label="Loading dashboard"
+      aria-label={t("dashboard")}
     >
       <div className="flex justify-between gap-4">
         <div className="space-y-2">
@@ -30,11 +36,13 @@ export function DashboardSkeleton() {
 }
 
 export function SkillsListSkeleton() {
+  const t = useTranslations("Loading");
+
   return (
     <div
       className="mx-auto flex w-full max-w-page flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8"
       aria-busy
-      aria-label="Loading skills"
+      aria-label={t("skills")}
     >
       <div className="flex justify-between gap-4">
         <div className="space-y-2">
@@ -53,11 +61,13 @@ export function SkillsListSkeleton() {
 }
 
 export function SkillDetailSkeleton() {
+  const t = useTranslations("Loading");
+
   return (
     <div
       className="mx-auto flex w-full max-w-detail flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8"
       aria-busy
-      aria-label="Loading skill"
+      aria-label={t("skill")}
     >
       <Skeleton className="h-5 w-40" />
       <div className="flex justify-between gap-4">

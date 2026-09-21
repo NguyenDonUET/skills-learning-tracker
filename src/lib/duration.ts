@@ -1,6 +1,8 @@
+export type DurationParseError = "empty" | "format" | "min";
+
 export type DurationParseResult =
   | { ok: true; minutes: number; warnLong: boolean }
-  | { ok: false; error: string };
+  | { ok: false; error: DurationParseError };
 
 const EIGHT_HOURS = 8 * 60;
 
@@ -9,10 +11,12 @@ const EIGHT_HOURS = 8 * 60;
  * - "45" → 45 minutes
  * - "1.5" → 90 minutes (hours)
  * - "1h 30m" / "1h30m" / "90m" → minutes
+ *
+ * Input tokens stay English (`h` / `m`) for stable parsing across locales.
  */
 export function parseDuration(input: string): DurationParseResult {
   const raw = input.trim().toLowerCase();
-  if (!raw) return { ok: false, error: "Enter a duration" };
+  if (!raw) return { ok: false, error: "empty" };
 
   let minutes = 0;
 
@@ -30,14 +34,14 @@ export function parseDuration(input: string): DurationParseResult {
     const hourMatch = raw.match(/(\d+(?:\.\d+)?)\s*h/);
     const minMatch = raw.match(/(\d+(?:\.\d+)?)\s*m/);
     if (!hourMatch && !minMatch) {
-      return { ok: false, error: "Try 45, 1h 30m, or 1.5" };
+      return { ok: false, error: "format" };
     }
     if (hourMatch) minutes += Math.round(Number(hourMatch[1]) * 60);
     if (minMatch) minutes += Math.round(Number(minMatch[1]));
   }
 
   if (!Number.isFinite(minutes) || minutes < 1) {
-    return { ok: false, error: "Duration must be at least 1 minute" };
+    return { ok: false, error: "min" };
   }
 
   return {

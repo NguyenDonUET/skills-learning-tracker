@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 
 import {
   HeatmapCell,
@@ -27,11 +28,6 @@ type SkillFilterOption = {
   color?: string;
 };
 
-const ALL_OPTION: SkillFilterOption = {
-  id: ALL_SKILLS,
-  name: "All skills",
-};
-
 type PracticeHeatmapProps = {
   data: HeatmapData;
   skillFilter?: string | null;
@@ -45,7 +41,14 @@ export function PracticeHeatmap({
   skills = [],
   onSkillFilterChange,
 }: PracticeHeatmapProps) {
+  const t = useTranslations("Heatmap");
+  const locale = useLocale();
   const [activeDate, setActiveDate] = useState<string | null>(null);
+
+  const allOption: SkillFilterOption = useMemo(
+    () => ({ id: ALL_SKILLS, name: t("allSkills") }),
+    [t],
+  );
 
   const activeDay = useMemo(
     () => data.days.find((d) => d.date === activeDate) ?? null,
@@ -53,25 +56,25 @@ export function PracticeHeatmap({
   );
 
   const filterItems = useMemo(
-    () => [ALL_OPTION, ...skills],
-    [skills],
+    () => [allOption, ...skills],
+    [allOption, skills],
   );
 
   const selectedFilter = useMemo(
     () =>
       filterItems.find((s) => s.id === (skillFilter ?? ALL_SKILLS)) ??
-      ALL_OPTION,
-    [filterItems, skillFilter],
+      allOption,
+    [filterItems, skillFilter, allOption],
   );
 
   return (
     <section
-      aria-label="Practice activity"
+      aria-label={t("aria")}
       className="bg-surface flex flex-col gap-5 rounded-xl border border-border p-6 shadow-sm sm:p-8"
     >
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <h2 className="font-heading text-lg font-semibold tracking-tight text-text-primary">
-          Practice Activity
+          {t("title")}
         </h2>
         <div className="flex flex-wrap items-center gap-3">
           {skills.length > 0 && onSkillFilterChange ? (
@@ -89,12 +92,12 @@ export function PracticeHeatmap({
               isItemEqualToValue={(a, b) => a.id === b.id}
             >
               <ComboboxInput
-                placeholder="All skills"
-                aria-label="Filter by skill"
+                placeholder={t("allSkills")}
+                aria-label={t("filterBySkill")}
                 className="w-44"
               />
               <ComboboxContent>
-                <ComboboxEmpty>No skills found.</ComboboxEmpty>
+                <ComboboxEmpty>{t("noSkillsFound")}</ComboboxEmpty>
                 <ComboboxList>
                   {(skill) => (
                     <ComboboxItem key={skill.id} value={skill}>
@@ -109,7 +112,7 @@ export function PracticeHeatmap({
             </Combobox>
           ) : null}
           <p className="shrink-0 text-sm text-text-tertiary">
-            Last {data.weeks} weeks
+            {t("lastWeeks", { weeks: data.weeks })}
           </p>
         </div>
       </div>
@@ -123,7 +126,7 @@ export function PracticeHeatmap({
             gridAutoFlow: "column",
           }}
           role="list"
-          aria-label="Heatmap of practice activity"
+          aria-label={t("gridAria")}
         >
           {data.days.map((day) => (
             <HeatmapCell
@@ -138,8 +141,12 @@ export function PracticeHeatmap({
               title={`${day.date}: ${formatDuration(day.totalMinutes)}`}
               aria-label={
                 day.isFuture
-                  ? `${day.date}, future`
-                  : `${day.date}, ${formatDuration(day.totalMinutes)}, ${day.sessionCount} sessions`
+                  ? t("future", { date: day.date })
+                  : t("dayAria", {
+                      date: day.date,
+                      duration: formatDuration(day.totalMinutes),
+                      count: day.sessionCount,
+                    })
               }
             />
           ))}
@@ -149,12 +156,19 @@ export function PracticeHeatmap({
       {activeDay && !activeDay.isFuture ? (
         <div className="bg-bg-secondary rounded-lg border border-border-subtle px-4 py-3 text-sm">
           <p className="font-medium text-text-primary">
-            {formatShortDate(activeDay.date)}
+            {formatShortDate(activeDay.date, locale)}
           </p>
           <p className="mt-1 text-text-secondary">
             {activeDay.sessionCount === 0
-              ? "No practice"
-              : `${formatDuration(activeDay.totalMinutes)} · ${activeDay.sessionCount} session${activeDay.sessionCount === 1 ? "" : "s"}`}
+              ? t("noPractice")
+              : t("practiceSummary", {
+                  duration: formatDuration(activeDay.totalMinutes),
+                  count: activeDay.sessionCount,
+                  sessionLabel:
+                    activeDay.sessionCount === 1
+                      ? t("session")
+                      : t("sessions"),
+                })}
           </p>
           {activeDay.skillNames.length > 0 ? (
             <p className="mt-0.5 text-text-tertiary">
@@ -165,7 +179,7 @@ export function PracticeHeatmap({
       ) : null}
 
       <div className="flex items-center justify-end gap-1.5 text-xs text-text-tertiary">
-        <span>Less</span>
+        <span>{t("less")}</span>
         {([0, 1, 2, 3, 4] as HeatmapLevel[]).map((level) => (
           <span
             key={level}
@@ -175,7 +189,7 @@ export function PracticeHeatmap({
             )}
           />
         ))}
-        <span>More</span>
+        <span>{t("more")}</span>
       </div>
     </section>
   );

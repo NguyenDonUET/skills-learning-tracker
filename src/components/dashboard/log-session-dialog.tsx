@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { ChevronDown, Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -27,7 +28,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { SkillColorDot } from "@/components/shared/skill-color-dot";
 import { todayDateString } from "@/lib/dates";
-import { parseDuration } from "@/lib/duration";
+import { parseDuration, type DurationParseError } from "@/lib/duration";
 import { formatDuration } from "@/lib/format";
 import { useTrackerStore } from "@/store/tracker-store";
 import type { Session } from "@/types/skill";
@@ -42,12 +43,18 @@ type LogSessionDialogProps = {
   defaultSkillId?: string;
 };
 
-const PRESETS = [
-  { label: "15m", value: "15" },
-  { label: "30m", value: "30" },
-  { label: "45m", value: "45" },
-  { label: "1h", value: "1h" },
-] as const;
+const PRESET_VALUES = [
+  { key: "preset15" as const, value: "15" },
+  { key: "preset30" as const, value: "30" },
+  { key: "preset45" as const, value: "45" },
+  { key: "preset1h" as const, value: "1h" },
+];
+
+const DURATION_ERROR_KEY: Record<DurationParseError, "enterDuration" | "tryFormat" | "durationMin"> = {
+  empty: "enterDuration",
+  format: "tryFormat",
+  min: "durationMin",
+};
 
 export function LogSessionDialog({
   triggerClassName,
@@ -57,6 +64,7 @@ export function LogSessionDialog({
   onOpenChange,
   defaultSkillId,
 }: LogSessionDialogProps) {
+  const t = useTranslations("Session");
   const skills = useTrackerStore((s) => s.skills);
   const sessions = useTrackerStore((s) => s.sessions);
   const addSession = useTrackerStore((s) => s.addSession);
@@ -112,15 +120,15 @@ export function LogSessionDialog({
   function handleSave() {
     const parsed = parseDuration(duration);
     if (!parsed.ok) {
-      setError(parsed.error);
+      setError(t(DURATION_ERROR_KEY[parsed.error]));
       return;
     }
     if (!skillId) {
-      setError("Pick a skill");
+      setError(t("pickSkill"));
       return;
     }
     if (date > todayDateString()) {
-      setError("Date can't be in the future");
+      setError(t("dateFuture"));
       return;
     }
 
@@ -152,14 +160,14 @@ export function LogSessionDialog({
         triggerClassName ??
         "fixed right-4 bottom-4 z-50 size-14 rounded-full shadow-lg sm:hidden"
       }
-      aria-label="Log session"
+      aria-label={t("logSession")}
     >
       <Plus className="size-6" />
     </Button>
   ) : (
     <Button type="button" size="lg" className={triggerClassName}>
       <Plus className="size-4" />
-      Log session
+      {t("logSession")}
     </Button>
   );
 
@@ -172,15 +180,15 @@ export function LogSessionDialog({
       ) : null}
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{isEdit ? "Edit session" : "Log a session"}</DialogTitle>
-          <DialogDescription>
-            Capture what you practiced — under 30 seconds.
-          </DialogDescription>
+          <DialogTitle>
+            {isEdit ? t("editSession") : t("logASession")}
+          </DialogTitle>
+          <DialogDescription>{t("description")}</DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-col gap-4 py-1">
           <div className="space-y-2">
-            <Label htmlFor="session-skill">Skill</Label>
+            <Label htmlFor="session-skill">{t("skill")}</Label>
             <Combobox
               items={skills}
               value={selectedSkill}
@@ -195,13 +203,13 @@ export function LogSessionDialog({
               <ComboboxInput
                 id="session-skill"
                 placeholder={
-                  skills.length === 0 ? "Add a skill first" : "Search skills…"
+                  skills.length === 0 ? t("addSkillFirst") : t("searchSkills")
                 }
                 className="w-full"
                 disabled={skills.length === 0}
               />
               <ComboboxContent>
-                <ComboboxEmpty>No skills found.</ComboboxEmpty>
+                <ComboboxEmpty>{t("noSkillsFound")}</ComboboxEmpty>
                 <ComboboxList>
                   {(skill) => (
                     <ComboboxItem key={skill.id} value={skill}>
@@ -215,7 +223,7 @@ export function LogSessionDialog({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="session-duration">Duration</Label>
+            <Label htmlFor="session-duration">{t("duration")}</Label>
             <div className="relative">
               <Input
                 id="session-duration"
@@ -227,7 +235,7 @@ export function LogSessionDialog({
                   const parsed = parseDuration(next);
                   setWarnLong(parsed.ok && parsed.warnLong);
                 }}
-                placeholder="45, 1h 30m, or 1.5"
+                placeholder={t("durationPlaceholder")}
                 autoComplete="off"
                 aria-describedby="session-duration-hint"
                 className="pr-16"
@@ -236,17 +244,25 @@ export function LogSessionDialog({
                 className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 text-xs font-medium text-text-tertiary tabular-nums"
                 aria-live="polite"
               >
-                {durationPreview ?? "min"}
+                {durationPreview ?? t("min")}
               </span>
             </div>
             <p id="session-duration-hint" className="text-xs text-text-tertiary">
-              Bare numbers are minutes · use{" "}
-              <span className="font-medium text-text-secondary">1h</span> or{" "}
-              <span className="font-medium text-text-secondary">1.5</span> for
-              hours
+              {t.rich("durationHint", {
+                h: (chunks) => (
+                  <span className="font-medium text-text-secondary">
+                    {chunks}
+                  </span>
+                ),
+                decimal: (chunks) => (
+                  <span className="font-medium text-text-secondary">
+                    {chunks}
+                  </span>
+                ),
+              })}
             </p>
             <div className="flex flex-wrap gap-2">
-              {PRESETS.map((p) => (
+              {PRESET_VALUES.map((p) => (
                 <Button
                   key={p.value}
                   type="button"
@@ -258,24 +274,23 @@ export function LogSessionDialog({
                     setWarnLong(false);
                   }}
                 >
-                  {p.label}
+                  {t(p.key)}
                 </Button>
               ))}
             </div>
             {warnLong ? (
-              <p className="text-xs text-warning">
-                That&apos;s over 8 hours — double-check if that&apos;s right.
-              </p>
+              <p className="text-xs text-warning">{t("warnLong")}</p>
             ) : null}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="session-date">Date</Label>
+            <Label htmlFor="session-date">{t("date")}</Label>
             <DatePicker
               id="session-date"
               value={date}
               max={todayDateString()}
               onChange={setDate}
+              placeholder={t("pickDate")}
             />
           </div>
 
@@ -288,14 +303,14 @@ export function LogSessionDialog({
               <ChevronDown
                 className={`size-4 transition-transform ${showNotes ? "rotate-180" : ""}`}
               />
-              {showNotes ? "Hide notes" : "Add notes"}
+              {showNotes ? t("hideNotes") : t("addNotes")}
             </button>
             {showNotes ? (
               <Textarea
                 id="session-notes"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="What clicked? What needs more work?"
+                placeholder={t("notesPlaceholder")}
                 rows={3}
               />
             ) : null}
@@ -310,7 +325,7 @@ export function LogSessionDialog({
 
         <DialogFooter>
           <Button type="button" onClick={handleSave} disabled={skills.length === 0}>
-            {isEdit ? "Save changes" : "Save session"}
+            {isEdit ? t("saveChanges") : t("saveSession")}
           </Button>
         </DialogFooter>
       </DialogContent>

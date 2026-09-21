@@ -1,0 +1,96 @@
+---
+description: Common React component-splitting patterns — apply when creating a new component, refactoring a large component, or deciding whether to extract a file
+globs: ["**/*.tsx"]
+alwaysApply: false
+---
+
+# Component Architecture Patterns
+
+When writing or refactoring a component, check the patterns below. Only extract when there's a clear signal — don't extract too early while a component is still small and simple (hasty abstraction makes code harder to follow, not easier).
+
+## 1. List/Item extraction
+
+- When JSX contains a `.map()` that renders a list with its own wrapper (`ul/li`, `grid`, virtualized list), extract it into a separate component named `<Entity>List.tsx`.
+- `<Entity>List` receives `items` plus handlers via props, and is responsible for rendering each item, the `key`, and the empty/loading state internally.
+- The single-item component is named `<Entity>Card` or `<Entity>Item`.
+- The parent (page/container) component should not know the details of how one item is rendered — it only passes `data` and handlers down to `<Entity>List`.
+- **Do not extract** if the list is used in exactly one place, is under ~10 lines of JSX, and has no state of its own (loading/empty/pagination).
+
+```tsx
+// BookmarkList.tsx
+interface BookmarkListProps {
+  bookmarks: Bookmark[];
+  onTogglePin: (id: string) => void;
+  onEdit: (id: string) => void;
+}
+
+export function BookmarkList({ bookmarks, onTogglePin, onEdit }: BookmarkListProps) {
+  if (bookmarks.length === 0) return <BookmarkEmptyState />;
+  return (
+    <ul className="grid gap-4">
+      {bookmarks.map((b) => (
+        <li key={b.id}>
+          <BookmarkCard bookmark={b} onTogglePin={onTogglePin} onEdit={onEdit} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+```
+
+## 2. Container / Presentational
+
+- A "container" component handles API calls, state management, and business logic.
+- A "presentational" component only receives props and renders pure UI, with no knowledge of where the data comes from.
+- Signal to split: a component that both `useEffect`/fetches data AND renders complex JSX in the same file.
+- Benefit: presentational components are easier to test and reuse with different data.
+
+## 3. Custom Hook extraction
+
+- Any logic that isn't JSX (API calls, subscriptions, complex computation, form management, debouncing...) should live in its own hook, named `use<Domain>` (`useBookmarks`, `useDialog`, `useDebounce`).
+- The component should just call the hook and render — it shouldn't rewrite `useEffect`/`useState` logic that already exists in another hook.
+- Signal to split: a component with more than 2-3 `useState`/`useEffect` calls related to the same domain.
+
+## 4. Compound Components
+
+- When a component has more than 3-4 boolean props controlling the visibility of different parts or multiple layout variants, do NOT add another boolean prop — switch to compound components using implicit context instead.
+- Avoid: `<Modal showHeader showFooter variant="danger" size="lg" />`
+- Prefer: `<Modal><Modal.Header/><Modal.Body/><Modal.Footer/></Modal>`
+
+## 5. Slot pattern / children as props
+
+- When a component needs a placeholder for customizable content, use `children` or a named slot prop (`header`, `footer`, `actions`) instead of hardcoding a prop like `title: string` or `actionLabel: string`.
+- Avoid: `<Card actionLabel="Delete" onAction={...}>`
+- Prefer: `<Card actions={<Button onClick={...}>Delete</Button>}>`
+
+## 6. Form / Field pattern
+
+- Separate `<Form>` (handles overall submit and validation) from individual `<Field>`/`<FormInput>` components, each responsible only for rendering one input plus its own error message.
+- Signal to split: a form with more than 5 fields, or validation logic repeated across multiple forms.
+
+## 7. Empty / Loading / Error state as separate components
+
+- Don't write nested conditionals like `{loading ? ... : error ? ... : data.length === 0 ? ... : <List/>}` scattered inside a component.
+- Extract `<EmptyState/>`, `<ErrorState/>`, `<LoadingSkeleton/>` as their own components — the parent component just references them by name instead of writing markup for each state itself.
+
+## 8. Feature-based folder structure
+
+- For medium/large projects (>20 components), organize by feature instead of by file type:
+  ```
+  src/features/bookmarks/
+    ├── components/   (BookmarkList.tsx, BookmarkCard.tsx)
+    ├── hooks/        (useBookmarks.ts)
+    ├── api/          (bookmarks.api.ts)
+    └── types.ts
+  ```
+- Code related to one feature lives in a single directory, instead of being scattered across the app's shared `components/`, `hooks/`, `types/` folders.
+- Small projects (<20 components) can keep a type-based structure (`components/`, `hooks/`) — feature folders aren't necessary yet.
+
+## 9. Data-fetching wrapper
+
+- Don't import `axios`/`fetch` directly inside a component. Wrap it in a custom hook (`useBookmarksQuery`) around React Query/SWR, or in a dedicated `api/` layer.
+- This lets you swap HTTP libraries or add caching/retry later without touching the component.
+
+## 10. Error Boundary per section
+
+- Wrap Error Boundaries around independent sections (e.g. a list, a widget) rather than using a single Error Boundary for the whole app — so one failing part doesn't crash the entire page.

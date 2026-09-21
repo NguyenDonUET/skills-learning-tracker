@@ -1,0 +1,29 @@
+---
+description: Project tech stack and tooling — always apply
+alwaysApply: true
+---
+
+# Project Tech Stack
+
+| Layer | Choice |
+|-------|--------|
+| Package manager | pnpm |
+| Framework | Next.js (App Router) |
+| Language | TypeScript |
+| Styling | Tailwind CSS v4 |
+| UI library | shadcn/ui (`@/components/ui`) |
+| Client state | Zustand |
+| ORM | Prisma |
+| Database | MongoDB |
+| Auth | Clerk (Google OAuth only) |
+| Hosting | Vercel |
+
+## Conventions
+
+- Install/run with `pnpm` only (`pnpm add`, `pnpm dev`, `pnpm dlx shadcn@latest add …`).
+- Prefer shadcn primitives; do not hand-roll Button/Dialog/Input duplicates.
+- Map UI colors to brand-kit / CSS tokens — no hardcoded hex when a token exists.
+- Client state: Zustand stores under `src/store/` — do not introduce a second global state library.
+- Auth: Google via Clerk only — no email/password flows.
+- App source lives under `src/` (`@/` → `./src/*`).
+- Brand reference: `guidance/brand-kit.md`, CSS tokens in `starter/tokens.css`, app theme in `src/app/globals.css`.

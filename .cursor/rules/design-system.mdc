@@ -1,0 +1,52 @@
+---
+description: Project design system conventions — components, tokens, and layout patterns
+alwaysApply: true
+---
+
+# Design System Rules
+
+## Core principle
+Reuse existing design-system tokens and components. Never hardcode hex colors, arbitrary pixel spacing, or one-off styles when an existing token/component already covers the case.
+
+## Components
+- Prefer shadcn primitives from `@/components/ui` for shared UI (buttons, inputs, dialogs, etc.) — do not hand-roll a duplicate of an existing primitive.
+- Feature-specific UI lives in `src/features/<feature>/components/`. Promote to `@/components/shared/` only when reused by 2+ features.
+- Do not hand-edit `@/components/ui` for a one-off usage — extend via `cva` variants, or override with `className` + `cn()`. Add new shadcn pieces with the CLI (`pnpm dlx shadcn@latest add <component>`).
+- Icons:
+  - App/UI icons from the Figma Icons frame: import from `@/components/icons` (e.g. `IconHomeLine`, `IconSearchMd`). Color via `currentColor` + Tailwind `text-*`; size via `size` (default 20).
+  - shadcn primitives may still use `lucide-react` where the CLI scaffolds them — prefer `@/components/icons` for product UI that must match the design system.
+  - Site favicons / brand marks: raster assets under `assets/images/` (e.g. `favicon-*.png`) — not React SVG icons.
+  - Do not inline raw SVG when an `@/components/icons` component already covers the case.
+
+## Tokens (Tailwind v4 CSS-first)
+All tokens live in `index.css` (`@theme inline` + `:root` / `.dark`). There is **no** `tailwind.config.*` and **no** `src/styles/tokens.css`.
+
+Use the **mapped Tailwind utilities**, not raw `var(--…)` / hex in components:
+
+| Concern | Source in `src/index.css` | Example utilities |
+| --- | --- | --- |
+| Figma palette | `--color-neutral-*`, `--color-teal-*`, `--color-red-*` | `bg-teal-700`, `text-neutral-500` |
+| shadcn semantic roles | `--color-background`, `--color-primary`, … | `bg-background`, `text-primary`, `border-border` |
+| Spacing (Figma `spacing-*`) | `--spacing-*` | `p-100`, `gap-200`, `mt-300` (not default Tailwind `p-4` / `p-[13px]`) |
+| Radius (Figma `radius-*`) | `--radius-*` | `rounded-10`, `rounded-full` |
+| Typography presets | `--text-preset-*` (+ line-height, letter-spacing) | `text-preset-1 font-bold`, `text-preset-3-semibold font-semibold` |
+| Breakpoints | `--breakpoint-*` | `sm:`, `md:`, `lg:`, `xl:` |
+
+- Prefer semantic roles (`bg-primary`) for app chrome; use palette primitives (`bg-teal-700`) when matching Figma literally.
+- If a Figma value is missing, **add a token in `src/index.css` first** — do not hardcode `text-[#111827]` or `p-[13px]`.
+- Merge classes with `cn()` from `@/lib/utils` (or `cn` as used by shadcn components) — do not string-concatenate `className`.
+
+## Layout & theming
+- Match spacing patterns from sibling components before inventing new values.
+- Desktop only for now — do not add mobile or responsive breakpoint styles unless asked.
+- Theming: `.dark` class via `@custom-variant dark (&:is(.dark *))` in `src/index.css`. Do not introduce a second mechanism (e.g. `data-theme`).
+
+## Files to reference before implementing UI
+- `src/index.css` — source of truth for all design tokens.
+- `src/stories/design-system/` — Storybook galleries for colors, typography, spacing, radius (`pnpm storybook`).
+- `components.json` — shadcn aliases, style, and icon library.
+- `src/components/ui/` — canonical shadcn primitives.
+- `.cursor/rules/styling.mdc` — deeper Tailwind / shadcn styling conventions.
+
+## When in doubt
+- If a design requirement cannot be met with existing tokens/components, flag it to the user instead of silently inventing a one-off — propose adding a token or extending a `cva` variant.

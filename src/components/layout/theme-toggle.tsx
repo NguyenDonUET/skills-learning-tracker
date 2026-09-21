@@ -14,6 +14,23 @@ export function ThemeToggle() {
     setMounted(true);
   }, []);
 
+  // Avoid reading theme until after mount — next-themes can resolve on the
+  // client before hydration finishes, which mismatches the server HTML.
+  if (!mounted) {
+    return (
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        className="size-11"
+        aria-label="Toggle color theme"
+        disabled
+      >
+        <Moon className="size-5" aria-hidden />
+      </Button>
+    );
+  }
+
   const isDark = resolvedTheme === "dark";
 
   return (
@@ -23,10 +40,9 @@ export function ThemeToggle() {
       size="icon"
       className="size-11"
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      disabled={!mounted}
       onClick={() => setTheme(isDark ? "light" : "dark")}
     >
-      {mounted && isDark ? (
+      {isDark ? (
         <Sun className="size-5" aria-hidden />
       ) : (
         <Moon className="size-5" aria-hidden />

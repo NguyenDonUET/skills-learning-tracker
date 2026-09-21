@@ -202,6 +202,7 @@ Route Handlers (or Server Actions):
 - Error toasts, network failure states, delete confirms.
 - Performance pass: skeletons, avoid layout shift, heatmap ≤12 months without jank.
 - Accessibility baseline from [`guidance/accessibility.md`](../guidance/accessibility.md).
+- **Language:** English + Vietnamese via `next-intl` (`/en/…`, `/vi/…`), browser detection on first visit, switcher in TopBar / landing.
 
 **Exit:** Feels polished; differentiator visible on guest demo.
 

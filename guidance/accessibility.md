@@ -69,7 +69,7 @@ This checklist covers the accessibility requirements for Skills Learning Tracker
 
 #### Language & Content
 
-- [ ] Page language is set (`<html lang="en">`)
+- [ ] Page language is set (`<html lang>` matches the active locale, e.g. `en` or `vi`)
 - [ ] Error messages use plain language, not technical jargon ("Couldn't save your session" not "Database write failed with error 500")
 - [ ] Streak and progress terminology is consistent throughout the app
 

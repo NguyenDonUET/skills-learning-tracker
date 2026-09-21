@@ -142,6 +142,7 @@
     "filterBySkill": "Filter by skill",
     "noSkillsFound": "No skills found.",
     "lastWeeks": "Last {weeks} weeks",
+    "pastYear": "Past year",
     "gridAria": "Heatmap of practice activity",
     "future": "{date}, future",
     "dayAria": "{date}, {duration}, {count} sessions",

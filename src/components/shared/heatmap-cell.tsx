@@ -15,6 +15,8 @@ type HeatmapCellProps = {
   level: HeatmapLevel;
   isFuture?: boolean;
   isToday?: boolean;
+  /** Fixed contribution-graph size vs fluid fill. */
+  size?: "sm" | "fluid";
   className?: string;
 } & Omit<ComponentProps<"button">, "type">;
 
@@ -22,6 +24,7 @@ export function HeatmapCell({
   level,
   isFuture = false,
   isToday = false,
+  size = "fluid",
   className,
   disabled,
   ...props
@@ -31,11 +34,15 @@ export function HeatmapCell({
       type="button"
       disabled={disabled ?? isFuture}
       className={cn(
-        "aspect-square w-full rounded-[3px] transition-opacity",
+        "rounded-[3px] transition-opacity",
+        size === "sm" ? "size-3 shrink-0" : "aspect-square w-full",
         isFuture
           ? "cursor-default bg-heatmap-empty/40"
           : HEATMAP_LEVEL_CLASS[level],
-        isToday && "ring-2 ring-accent ring-offset-1 ring-offset-surface",
+        isToday &&
+          (size === "sm"
+            ? "ring-1 ring-accent ring-offset-1 ring-offset-surface"
+            : "ring-2 ring-accent ring-offset-1 ring-offset-surface"),
         !isFuture &&
           "hover:opacity-80 focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-2",
         className,

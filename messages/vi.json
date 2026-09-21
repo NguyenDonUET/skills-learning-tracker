@@ -142,6 +142,7 @@
     "filterBySkill": "Lọc theo kỹ năng",
     "noSkillsFound": "Không tìm thấy kỹ năng.",
     "lastWeeks": "{weeks} tuần gần đây",
+    "pastYear": "Năm qua",
     "gridAria": "Heatmap hoạt động luyện tập",
     "future": "{date}, tương lai",
     "dayAria": "{date}, {duration}, {count} buổi",

@@ -17,7 +17,12 @@ import {
   ComboboxList,
 } from "@/components/ui/combobox";
 import { formatDuration, formatShortDate } from "@/lib/format";
-import type { HeatmapData, HeatmapLevel } from "@/lib/heatmap";
+import {
+  formatHeatmapMonthLabel,
+  groupHeatmapByMonth,
+  type HeatmapData,
+  type HeatmapLevel,
+} from "@/lib/heatmap";
 import { cn } from "@/lib/utils";
 
 const ALL_SKILLS = "all";
@@ -53,6 +58,11 @@ export function PracticeHeatmap({
   const activeDay = useMemo(
     () => data.days.find((d) => d.date === activeDate) ?? null,
     [data.days, activeDate],
+  );
+
+  const monthGroups = useMemo(
+    () => groupHeatmapByMonth(data.days),
+    [data.days],
   );
 
   const filterItems = useMemo(
@@ -112,44 +122,76 @@ export function PracticeHeatmap({
             </Combobox>
           ) : null}
           <p className="shrink-0 text-sm text-text-tertiary">
-            {t("lastWeeks", { weeks: data.weeks })}
+            {data.weeks >= 48
+              ? t("pastYear")
+              : t("lastWeeks", { weeks: data.weeks })}
           </p>
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto pb-1">
         <div
-          className="grid w-full gap-1"
-          style={{
-            gridTemplateColumns: `repeat(${data.weeks}, minmax(0, 1fr))`,
-            gridTemplateRows: "repeat(7, auto)",
-            gridAutoFlow: "column",
-          }}
+          className="inline-flex flex-col gap-3"
           role="list"
           aria-label={t("gridAria")}
         >
-          {data.days.map((day) => (
-            <HeatmapCell
-              key={day.date}
-              role="listitem"
-              level={day.level}
-              isFuture={day.isFuture}
-              isToday={day.isToday}
-              onClick={() =>
-                setActiveDate((prev) => (prev === day.date ? null : day.date))
-              }
-              title={`${day.date}: ${formatDuration(day.totalMinutes)}`}
-              aria-label={
-                day.isFuture
-                  ? t("future", { date: day.date })
-                  : t("dayAria", {
-                      date: day.date,
-                      duration: formatDuration(day.totalMinutes),
-                      count: day.sessionCount,
-                    })
-              }
-            />
-          ))}
+          <div className="flex gap-3">
+            {monthGroups.map((group) => (
+              <div
+                key={group.monthKey}
+                className="flex flex-col items-stretch gap-2"
+              >
+                <div className="flex gap-1">
+                  {group.weeks.map((week) => (
+                    <div
+                      key={week[0]?.date ?? group.monthKey}
+                      className="flex flex-col gap-1"
+                    >
+                      {week.map((day) => (
+                        <HeatmapCell
+                          key={day.date}
+                          role="listitem"
+                          size="sm"
+                          level={day.level}
+                          isFuture={day.isFuture}
+                          isToday={day.isToday}
+                          onClick={() =>
+                            setActiveDate((prev) =>
+                              prev === day.date ? null : day.date,
+                            )
+                          }
+                          title={`${day.date}: ${formatDuration(day.totalMinutes)}`}
+                          aria-label={
+                            day.isFuture
+                              ? t("future", { date: day.date })
+                              : t("dayAria", {
+                                  date: day.date,
+                                  duration: formatDuration(day.totalMinutes),
+                                  count: day.sessionCount,
+                                })
+                          }
+                        />
+                      ))}
+                    </div>
+                  ))}
+                </div>
+                <span className="text-center text-xs text-text-tertiary">
+                  {formatHeatmapMonthLabel(group.monthKey, locale)}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex items-center justify-end gap-1.5 text-xs text-text-tertiary">
+            <span>{t("less")}</span>
+            {([0, 1, 2, 3, 4] as HeatmapLevel[]).map((level) => (
+              <span
+                key={level}
+                className={cn("size-2.5 rounded-[3px]", HEATMAP_LEVEL_CLASS[level])}
+              />
+            ))}
+            <span>{t("more")}</span>
+          </div>
         </div>
       </div>
 
@@ -177,20 +219,6 @@ export function PracticeHeatmap({
           ) : null}
         </div>
       ) : null}
-
-      <div className="flex items-center justify-end gap-1.5 text-xs text-text-tertiary">
-        <span>{t("less")}</span>
-        {([0, 1, 2, 3, 4] as HeatmapLevel[]).map((level) => (
-          <span
-            key={level}
-            className={cn(
-              "size-2.5 rounded-xs",
-              HEATMAP_LEVEL_CLASS[level],
-            )}
-          />
-        ))}
-        <span>{t("more")}</span>
-      </div>
     </section>
   );
 }

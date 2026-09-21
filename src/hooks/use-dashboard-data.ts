@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 
 import { todayDateString } from "@/lib/dates";
-import { buildHeatmap } from "@/lib/heatmap";
+import { buildHeatmap, HEATMAP_WEEKS } from "@/lib/heatmap";
 import {
   buildOverallStats,
   buildRecentSessions,
@@ -27,7 +27,7 @@ export function useDashboardData() {
     const recentSessions = buildRecentSessions(skills, sessions, 5);
     const skillNameById = Object.fromEntries(skills.map((s) => [s.id, s.name]));
     const heatmap = buildHeatmap(sessions, skillNameById, {
-      weeks: 18,
+      weeks: HEATMAP_WEEKS,
       today,
     });
 

@@ -15,7 +15,7 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { Button } from "@/components/ui/button";
 import { useDashboardData } from "@/hooks/use-dashboard-data";
 import { todayDateString } from "@/lib/dates";
-import { buildHeatmap } from "@/lib/heatmap";
+import { buildHeatmap, HEATMAP_WEEKS } from "@/lib/heatmap";
 
 export function DashboardView() {
   const t = useTranslations("Dashboard");
@@ -36,7 +36,7 @@ export function DashboardView() {
     if (!skillFilter) return heatmap;
     const skillNameById = Object.fromEntries(skills.map((s) => [s.id, s.name]));
     return buildHeatmap(sessions, skillNameById, {
-      weeks: 18,
+      weeks: HEATMAP_WEEKS,
       today: todayDateString(),
       skillId: skillFilter,
     });

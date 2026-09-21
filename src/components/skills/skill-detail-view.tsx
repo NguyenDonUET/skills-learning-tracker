@@ -18,7 +18,7 @@ import { Link } from "@/i18n/navigation";
 import { todayDateString } from "@/lib/dates";
 import { formatDuration, formatHours } from "@/lib/format";
 import { goalPace } from "@/lib/goals";
-import { buildHeatmap } from "@/lib/heatmap";
+import { buildHeatmap, HEATMAP_WEEKS } from "@/lib/heatmap";
 import { averageSessionMinutes, weeklyHoursTrend } from "@/lib/trends";
 import { useTrackerStore } from "@/store/tracker-store";
 import type { SkillSummary } from "@/types/skill";
@@ -44,7 +44,7 @@ export function SkillDetailView({ summary }: SkillDetailViewProps) {
       buildHeatmap(
         skillSessions,
         { [skill.id]: skill.name },
-        { weeks: 18, today, skillId: skill.id },
+        { weeks: HEATMAP_WEEKS, today, skillId: skill.id },
       ),
     [skillSessions, skill.id, skill.name, today],
   );

@@ -10,7 +10,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       defaultTheme="system"
       enableSystem
       storageKey="slt-theme"
-      disableTransitionOnChange={false}
+      disableTransitionOnChange
     >
       {children}
     </NextThemesProvider>

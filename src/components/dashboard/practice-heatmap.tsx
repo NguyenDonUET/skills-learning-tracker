@@ -116,7 +116,7 @@ export function PracticeHeatmap({
 
       <div className="overflow-x-auto">
         <div
-          className="grid w-full max-w-md gap-1"
+          className="grid w-full gap-1"
           style={{
             gridTemplateColumns: `repeat(${data.weeks}, minmax(0, 1fr))`,
             gridTemplateRows: "repeat(7, auto)",

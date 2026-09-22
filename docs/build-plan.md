@@ -14,7 +14,7 @@ Build Skills Learning Tracker in phases: **static Next.js UI** with pnpm, shadcn
 | 5 — Clerk (Google) | Done |
 | 6 — Prisma + MongoDB + API | Done |
 | 7 — Wire UI ↔ backend + guest | Done |
-| 8 — Animations + polish | Pending |
+| 8 — Animations + polish | Done |
 | 9 — Deploy + README | Pending |
 
 ---
@@ -196,7 +196,7 @@ Route Handlers (or Server Actions):
 
 ## Phase 8 — Differentiator + polish
 
-**Status:** Pending
+**Status:** Done
 
 - Animated rings (value → value), streak count-up, heatmap staggered fade-in, log confirmation micro-moment; honor `prefers-reduced-motion`.
 - Error toasts, network failure states, delete confirms.

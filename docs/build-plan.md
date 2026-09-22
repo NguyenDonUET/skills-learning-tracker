@@ -12,8 +12,8 @@ Build Skills Learning Tracker in phases: **static Next.js UI** with pnpm, shadcn
 | 3 — Domain logic + mock store CRUD | Done |
 | 4 — Skill detail + dark mode | Done |
 | 5 — Clerk (Google) | Done |
-| 6 — Prisma + MongoDB + API | Pending |
-| 7 — Wire UI ↔ backend + guest | Pending |
+| 6 — Prisma + MongoDB + API | Done |
+| 7 — Wire UI ↔ backend + guest | Done |
 | 8 — Animations + polish | Pending |
 | 9 — Deploy + README | Pending |
 
@@ -160,7 +160,7 @@ Wire **Zustand** store seeded from [`data/sample-skills.json`](../data/sample-sk
 
 ## Phase 6 — Prisma + MongoDB schema + API
 
-**Status:** Pending
+**Status:** Done
 
 Prisma MongoDB models (aligned with [`spec/technical-requirements.md`](../spec/technical-requirements.md)):
 
@@ -181,7 +181,7 @@ Route Handlers (or Server Actions):
 
 ## Phase 7 — Integrate UI ↔ backend
 
-**Status:** Pending
+**Status:** Done
 
 - Replace mock store for **authenticated** users with API / Server Actions.
 - Keep the same `lib/` calculators; feed them API data.

@@ -1,0 +1,58 @@
+// Prisma schema for Skills Learning Tracker (MongoDB).
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGODB_URI")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  clerkId   String   @unique
+  /// "light" | "dark" | "system"
+  theme     String   @default("system")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  skills   Skill[]
+  sessions Session[]
+}
+
+model Skill {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String   @db.ObjectId
+  user            User     @relation(fields: [userId], references: [id])
+  name            String
+  color           String
+  /// "weekly" | "total" when a goal is set
+  goalType        String?
+  goalTargetHours Float?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  sessions Session[]
+
+  @@index([userId])
+}
+
+model Session {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String   @db.ObjectId
+  user            User     @relation(fields: [userId], references: [id])
+  skillId         String   @db.ObjectId
+  skill           Skill    @relation(fields: [skillId], references: [id])
+  durationMinutes Int
+  /// Local calendar date YYYY-MM-DD
+  date            String
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId, date])
+  @@index([userId, skillId])
+  @@index([userId, skillId, date])
+}

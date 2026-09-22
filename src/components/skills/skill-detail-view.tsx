@@ -11,6 +11,7 @@ import { SkillGoalCard } from "@/components/skills/skill-goal-card";
 import { SkillSessionHistory } from "@/components/skills/skill-session-history";
 import { SkillTrends } from "@/components/skills/skill-trends";
 import { EmptyState } from "@/components/shared/empty-state";
+import { PageTitle } from "@/components/shared/page-title";
 import { SkillColorDot } from "@/components/shared/skill-color-dot";
 import { StreakBadge } from "@/components/shared/streak-badge";
 import { Button } from "@/components/ui/button";
@@ -68,6 +69,7 @@ export function SkillDetailView({ summary }: SkillDetailViewProps) {
 
   return (
     <div className="mx-auto flex w-full max-w-detail flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8">
+      <PageTitle title={skill.name} />
       <Button variant="ghost" asChild className="w-fit px-0">
         <Link href={href("dashboard")}>{t("backToDashboard")}</Link>
       </Button>
@@ -82,6 +84,7 @@ export function SkillDetailView({ summary }: SkillDetailViewProps) {
             <StreakBadge
               days={summary.currentStreak}
               status={summary.streakStatus}
+              skillName={skill.name}
             />
           </div>
         </div>

@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 
 import { SkillFormDialog } from "@/components/skills/skill-form-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
+import { PageTitle } from "@/components/shared/page-title";
 import { SkillColorDot } from "@/components/shared/skill-color-dot";
 import { Spinner } from "@/components/shared/spinner";
 import { StreakBadge } from "@/components/shared/streak-badge";
@@ -40,6 +41,7 @@ export default function SkillsPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-page flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8">
+      <PageTitle title={t("title")} />
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="font-heading text-2xl font-bold text-text-primary sm:text-3xl">

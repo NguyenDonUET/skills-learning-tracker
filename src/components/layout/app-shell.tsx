@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { useTranslations } from "next-intl";
 
 import { GuestSaveBanner } from "@/components/layout/guest-save-banner";
 import { TopBar } from "@/components/layout/top-bar";
@@ -15,6 +16,7 @@ import { isAppChromePath } from "@/lib/app-paths";
  * switches. Pages under `[locale]` still swap; chrome does not remount.
  */
 export function AppShell({ children }: { children: ReactNode }) {
+  const t = useTranslations("Common");
   const pathname = usePathname();
   const path = pathnameWithoutLocale(pathname);
 
@@ -25,9 +27,17 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <TrackerProvider>
       <ThemePreferenceSync />
+      <a
+        href="#main-content"
+        className="bg-surface text-text-primary sr-only rounded-md px-3 py-2 text-sm font-medium shadow-md focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50"
+      >
+        {t("skipToContent")}
+      </a>
       <TopBar />
       <GuestSaveBanner />
-      <div className="flex flex-1 flex-col bg-bg-primary">{children}</div>
+      <main id="main-content" className="flex flex-1 flex-col bg-bg-primary">
+        {children}
+      </main>
     </TrackerProvider>
   );
 }

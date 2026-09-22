@@ -12,6 +12,7 @@ import { RecentSessions } from "@/components/dashboard/recent-sessions";
 import { SkillCard } from "@/components/dashboard/skill-card";
 import { SkillFormDialog } from "@/components/skills/skill-form-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
+import { PageTitle } from "@/components/shared/page-title";
 import { Button } from "@/components/ui/button";
 import { useDashboardData } from "@/hooks/use-dashboard-data";
 import { todayDateString } from "@/lib/dates";
@@ -45,6 +46,7 @@ export function DashboardView() {
   if (empty) {
     return (
       <div className="mx-auto flex w-full max-w-page flex-col px-4 py-8 sm:px-6">
+        <PageTitle title={t("title")} />
         <EmptyState
           title={t("emptyTitle")}
           description={t("emptyDescription")}
@@ -65,6 +67,7 @@ export function DashboardView() {
 
   return (
     <div className="mx-auto flex w-full max-w-page flex-col gap-6 px-4 py-6 pb-24 sm:px-6 sm:py-8 sm:pb-8">
+      <PageTitle title={t("title")} />
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="font-heading text-2xl font-bold text-text-primary sm:text-3xl">

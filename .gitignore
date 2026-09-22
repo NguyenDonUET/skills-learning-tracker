@@ -49,3 +49,4 @@ next-env.d.ts
 # /CLAUDE.md
 # /README-template.md
 # /preview.jpg
+.clerk/

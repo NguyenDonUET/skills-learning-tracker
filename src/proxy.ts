@@ -1,5 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import createMiddleware from "next-intl/middleware";
+import { NextResponse } from "next/server";
 
 import { routing } from "@/i18n/routing";
 
@@ -16,6 +17,12 @@ const isProtectedRoute = createRouteMatcher([
 export default clerkMiddleware(async (auth, request) => {
   if (isProtectedRoute(request)) {
     await auth.protect();
+  }
+
+  // Keep Clerk on /api for auth(), but never locale-prefix API routes
+  // (next-intl would otherwise rewrite /api/skills → /en/api/skills → 404).
+  if (request.nextUrl.pathname.startsWith("/api")) {
+    return NextResponse.next();
   }
 
   return intlMiddleware(request);

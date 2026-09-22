@@ -1,3 +1,4 @@
+import { ClerkProvider } from "@clerk/nextjs";
 import { getLocale } from "next-intl/server";
 import { Inter, Space_Grotesk } from "next/font/google";
 
@@ -37,12 +38,14 @@ export default async function RootLayout({ children }: Props) {
       className={`${spaceGrotesk.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col font-sans">
-        <ThemeProvider>
+        <ClerkProvider>
+          <ThemeProvider>
           <TooltipProvider>
-            {children}
-            <Toaster />
+          {children}
+          <Toaster />
           </TooltipProvider>
-        </ThemeProvider>
+          </ThemeProvider>
+        </ClerkProvider>
       </body>
     </html>
   );

@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
 import { LogSessionDialog } from "@/components/dashboard/log-session-dialog";
+import { DeleteSessionButton } from "@/components/shared/delete-session-button";
 import { EmptyState } from "@/components/shared/empty-state";
 import { SkillColorDot } from "@/components/shared/skill-color-dot";
-import { Spinner } from "@/components/shared/spinner";
 import { Button } from "@/components/ui/button";
 import { formatDuration, formatShortDate } from "@/lib/format";
 import { useTrackerStore } from "@/store/tracker-store";
@@ -19,13 +19,11 @@ type RecentSessionsProps = {
 
 export function RecentSessions({ sessions }: RecentSessionsProps) {
   const t = useTranslations("Recent");
-  const tCommon = useTranslations("Common");
   const locale = useLocale();
   const allSessions = useTrackerStore((s) => s.sessions);
   const deleteSession = useTrackerStore((s) => s.deleteSession);
 
   const [editId, setEditId] = useState<string | null>(null);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const editSession = allSessions.find((s) => s.id === editId) ?? null;
 
@@ -85,31 +83,10 @@ export function RecentSessions({ sessions }: RecentSessionsProps) {
                 >
                   <Pencil className="size-4" />
                 </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon-sm"
-                  className="size-11 text-error sm:size-8"
-                  aria-label={
-                    deletingId === session.id
-                      ? tCommon("deleting")
-                      : t("deleteSession")
-                  }
-                  disabled={deletingId === session.id}
-                  aria-busy={deletingId === session.id}
-                  onClick={() => {
-                    setDeletingId(session.id);
-                    void deleteSession(session.id).finally(() =>
-                      setDeletingId(null),
-                    );
-                  }}
-                >
-                  {deletingId === session.id ? (
-                    <Spinner />
-                  ) : (
-                    <Trash2 className="size-4" />
-                  )}
-                </Button>
+                <DeleteSessionButton
+                  label={t("deleteSession")}
+                  onDelete={() => deleteSession(session.id)}
+                />
               </div>
             </li>
           ))}

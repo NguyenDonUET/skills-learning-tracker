@@ -50,7 +50,7 @@ export function DeleteSessionButton({
           <Trash2 className="size-4" />
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent initialFocus="action">
         <AlertDialogHeader>
           <AlertDialogTitle>{t("deleteSessionTitle")}</AlertDialogTitle>
           <AlertDialogDescription>

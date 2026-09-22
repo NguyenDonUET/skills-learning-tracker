@@ -148,7 +148,7 @@ export default function SkillsPage() {
           if (!next) setDeleteTarget(null);
         }}
       >
-        <AlertDialogContent>
+        <AlertDialogContent initialFocus="action">
           <AlertDialogHeader>
             <AlertDialogTitle>
               {t("deleteTitle", { name: deleteTarget?.name ?? "" })}

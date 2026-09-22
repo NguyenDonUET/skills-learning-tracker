@@ -11,7 +11,7 @@ Build Skills Learning Tracker in phases: **static Next.js UI** with pnpm, shadcn
 | 2 — App shell + static dashboard | Done |
 | 3 — Domain logic + mock store CRUD | Done |
 | 4 — Skill detail + dark mode | Done |
-| 5 — Clerk (Google) | Pending |
+| 5 — Clerk (Google) | Done |
 | 6 — Prisma + MongoDB + API | Pending |
 | 7 — Wire UI ↔ backend + guest | Pending |
 | 8 — Animations + polish | Pending |
@@ -146,7 +146,7 @@ Wire **Zustand** store seeded from [`data/sample-skills.json`](../data/sample-sk
 
 ## Phase 5 — Clerk (Google only)
 
-**Status:** Pending
+**Status:** Done
 
 - Add `@clerk/nextjs`; middleware protect `/dashboard`, `/skills/*` for signed-in users **except** explicit guest path.
 - Clerk dashboard: enable **Google** only; disable email/password if possible.

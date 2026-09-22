@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { ProgressRing } from "@/components/shared/progress-ring";
 import { SkillColorDot } from "@/components/shared/skill-color-dot";
 import { StreakBadge } from "@/components/shared/streak-badge";
+import { useAppMode } from "@/hooks/use-app-mode";
 import { Link } from "@/i18n/navigation";
 import { formatHours } from "@/lib/format";
 import type { SkillSummary } from "@/types/skill";
@@ -15,6 +16,7 @@ type SkillCardProps = {
 
 export function SkillCard({ summary }: SkillCardProps) {
   const t = useTranslations("Dashboard");
+  const { href } = useAppMode();
   const { skill, totalHours, currentStreak, streakStatus, goalProgress } = summary;
 
   return (
@@ -22,7 +24,10 @@ export function SkillCard({ summary }: SkillCardProps) {
       <div className="flex items-start justify-between gap-2">
         <h3 className="font-heading flex min-w-0 items-center gap-2 text-lg font-medium text-text-primary">
           <SkillColorDot color={skill.color} />
-          <Link href={`/skills/${skill.id}`} className="truncate hover:underline">
+          <Link
+            href={href(`skills/${skill.id}`)}
+            className="truncate hover:underline"
+          >
             {skill.name}
           </Link>
         </h3>

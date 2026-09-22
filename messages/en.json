@@ -11,7 +11,9 @@
     "main": "Main",
     "language": "Language",
     "en": "EN",
-    "vi": "VI"
+    "vi": "VI",
+    "signIn": "Sign in",
+    "guestInitial": "G"
   },
   "Theme": {
     "toggle": "Toggle color theme",
@@ -24,7 +26,7 @@
     "subhead": "Log practice, protect your streaks, and watch consistency show up as rings, hours, and a living heatmap — Strava for learning.",
     "continueGoogle": "Continue with Google",
     "tryGuest": "Try as Guest",
-    "guestNote": "Guest mode explores the full demo. Google sign-in wires up in a later phase.",
+    "guestNote": "Guest mode explores the full demo with sample data. Sign in with Google to keep your own progress.",
     "featuresHeading": "Built for deliberate practice",
     "featuresSubhead": "Motivating without guilt trips — clear proof that showing up compounds.",
     "feature1Title": "Streaks that keep you honest",

@@ -11,7 +11,9 @@
     "main": "Chính",
     "language": "Ngôn ngữ",
     "en": "EN",
-    "vi": "VI"
+    "vi": "VI",
+    "signIn": "Đăng nhập",
+    "guestInitial": "K"
   },
   "Theme": {
     "toggle": "Đổi giao diện sáng/tối",
@@ -24,7 +26,7 @@
     "subhead": "Ghi buổi luyện, giữ chuỗi ngày, và xem sự đều đặn hiện thành vòng tiến độ, giờ học và heatmap sống động — như Strava cho việc học.",
     "continueGoogle": "Tiếp tục với Google",
     "tryGuest": "Dùng thử khách",
-    "guestNote": "Chế độ khách mở toàn bộ bản demo. Đăng nhập Google sẽ có ở giai đoạn sau.",
+    "guestNote": "Chế độ khách mở toàn bộ bản demo với dữ liệu mẫu. Đăng nhập Google để lưu tiến độ của bạn.",
     "featuresHeading": "Thiết kế cho luyện tập có chủ đích",
     "featuresSubhead": "Khích lệ mà không gây tội lỗi — bằng chứng rõ ràng rằng kiên trì sẽ tích lũy.",
     "feature1Title": "Chuỗi ngày giữ bạn trung thực",

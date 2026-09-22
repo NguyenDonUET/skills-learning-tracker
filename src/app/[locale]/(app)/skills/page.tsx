@@ -20,6 +20,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Link } from "@/i18n/navigation";
+import { useAppMode } from "@/hooks/use-app-mode";
 import { useDashboardData } from "@/hooks/use-dashboard-data";
 import { formatHours } from "@/lib/format";
 import { useTrackerStore } from "@/store/tracker-store";
@@ -27,6 +28,7 @@ import type { Skill } from "@/types/skill";
 
 export default function SkillsPage() {
   const t = useTranslations("Skills");
+  const { href } = useAppMode();
   const { summaries } = useDashboardData();
   const deleteSkill = useTrackerStore((s) => s.deleteSkill);
 
@@ -77,7 +79,7 @@ export default function SkillsPage() {
             >
               <div className="flex items-start gap-3">
                 <Link
-                  href={`/skills/${summary.skill.id}`}
+                  href={href(`skills/${summary.skill.id}`)}
                   className="flex min-w-0 flex-1 items-center gap-3"
                 >
                   <SkillColorDot color={summary.skill.color} size="md" />

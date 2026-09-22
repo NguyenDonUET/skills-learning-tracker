@@ -6,11 +6,7 @@ import { TopBar } from "@/components/layout/top-bar";
 import { TrackerProvider } from "@/components/providers/tracker-provider";
 import { usePathname } from "@/i18n/navigation";
 import { pathnameWithoutLocale } from "@/i18n/pathname";
-
-function isAppPath(pathname: string) {
-  const path = pathnameWithoutLocale(pathname);
-  return path === "/dashboard" || path.startsWith("/skills");
-}
+import { isAppChromePath } from "@/lib/app-paths";
 
 /**
  * App chrome lives here (root layout) so TopBar / store survive locale
@@ -18,8 +14,9 @@ function isAppPath(pathname: string) {
  */
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const path = pathnameWithoutLocale(pathname);
 
-  if (!isAppPath(pathname)) {
+  if (!isAppChromePath(path)) {
     return children;
   }
 

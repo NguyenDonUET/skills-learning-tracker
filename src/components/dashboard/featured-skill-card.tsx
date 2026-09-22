@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { ProgressRing } from "@/components/shared/progress-ring";
 import { SkillColorDot } from "@/components/shared/skill-color-dot";
 import { StreakBadge } from "@/components/shared/streak-badge";
+import { useAppMode } from "@/hooks/use-app-mode";
 import { Link } from "@/i18n/navigation";
 import type { SkillSummary } from "@/types/skill";
 import { formatHours } from "@/lib/format";
@@ -15,6 +16,7 @@ type FeaturedSkillCardProps = {
 
 export function FeaturedSkillCard({ summary }: FeaturedSkillCardProps) {
   const t = useTranslations("Dashboard");
+  const { href } = useAppMode();
   const { skill, totalHours, currentStreak, streakStatus, goalProgress, sessionCount } =
     summary;
   const percent =
@@ -30,7 +32,7 @@ export function FeaturedSkillCard({ summary }: FeaturedSkillCardProps) {
           <h2 className="font-heading mt-1 flex items-center gap-2 text-xl font-semibold text-text-primary">
             <SkillColorDot color={skill.color} size="md" />
             <Link
-              href={`/skills/${skill.id}`}
+              href={href(`skills/${skill.id}`)}
               className="truncate hover:underline"
             >
               {skill.name}

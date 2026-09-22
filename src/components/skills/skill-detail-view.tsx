@@ -14,6 +14,7 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { SkillColorDot } from "@/components/shared/skill-color-dot";
 import { StreakBadge } from "@/components/shared/streak-badge";
 import { Button } from "@/components/ui/button";
+import { useAppMode } from "@/hooks/use-app-mode";
 import { Link } from "@/i18n/navigation";
 import { todayDateString } from "@/lib/dates";
 import { formatDuration, formatHours } from "@/lib/format";
@@ -30,6 +31,7 @@ type SkillDetailViewProps = {
 export function SkillDetailView({ summary }: SkillDetailViewProps) {
   const t = useTranslations("Skills");
   const locale = useLocale();
+  const { href } = useAppMode();
   const sessions = useTrackerStore((s) => s.sessions);
   const { skill } = summary;
   const today = todayDateString();
@@ -67,7 +69,7 @@ export function SkillDetailView({ summary }: SkillDetailViewProps) {
   return (
     <div className="mx-auto flex w-full max-w-detail flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8">
       <Button variant="ghost" asChild className="w-fit px-0">
-        <Link href="/dashboard">{t("backToDashboard")}</Link>
+        <Link href={href("dashboard")}>{t("backToDashboard")}</Link>
       </Button>
 
       <div className="flex flex-wrap items-start justify-between gap-4">

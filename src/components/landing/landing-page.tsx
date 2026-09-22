@@ -6,6 +6,7 @@ import {
   NotebookPen,
   Target,
 } from "lucide-react";
+import { SignInButton } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
 
 import { ProductShowcase } from "@/components/landing/product-showcase";
@@ -15,6 +16,26 @@ import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 
 const FEATURE_ICONS = [Flame, Target, Layers, NotebookPen] as const;
+
+function ContinueWithGoogleButton({
+  size = "sm",
+  variant = "default",
+  className,
+  label,
+}: {
+  size?: "sm" | "lg";
+  variant?: "default" | "outline";
+  className?: string;
+  label: string;
+}) {
+  return (
+    <SignInButton mode="redirect" forceRedirectUrl="/dashboard">
+      <Button size={size} variant={variant} className={className}>
+        {label}
+      </Button>
+    </SignInButton>
+  );
+}
 
 export function LandingPage() {
   const t = useTranslations("Landing");
@@ -45,11 +66,13 @@ export function LandingPage() {
           <LanguageSwitcher />
           <ThemeToggle />
           <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-            <Link href="/dashboard">{t("tryGuest")}</Link>
+            <Link href="/guest">{t("tryGuest")}</Link>
           </Button>
-          <Button asChild size="sm">
-            <Link href="/dashboard">{t("continueGoogle")}</Link>
-          </Button>
+          <ContinueWithGoogleButton
+            size="sm"
+            className="hidden sm:inline-flex"
+            label={t("continueGoogle")}
+          />
         </div>
       </header>
 
@@ -66,16 +89,18 @@ export function LandingPage() {
               {t("subhead")}
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Button asChild size="lg" className="min-h-11 px-5">
-                <Link href="/dashboard">{t("continueGoogle")}</Link>
-              </Button>
+              <ContinueWithGoogleButton
+                size="lg"
+                className="min-h-11 px-5"
+                label={t("continueGoogle")}
+              />
               <Button
                 asChild
                 size="lg"
                 variant="outline"
                 className="min-h-11 px-5"
               >
-                <Link href="/dashboard">{t("tryGuest")}</Link>
+                <Link href="/guest">{t("tryGuest")}</Link>
               </Button>
             </div>
             <p className="mt-3 text-xs text-text-tertiary">{t("guestNote")}</p>
@@ -129,16 +154,14 @@ export function LandingPage() {
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Button asChild size="lg" className="min-h-11 px-5">
-              <Link href="/dashboard">{t("tryGuest")}</Link>
+              <Link href="/guest">{t("tryGuest")}</Link>
             </Button>
-            <Button
-              asChild
+            <ContinueWithGoogleButton
               size="lg"
               variant="outline"
               className="min-h-11 px-5"
-            >
-              <Link href="/dashboard">{t("continueGoogle")}</Link>
-            </Button>
+              label={t("continueGoogle")}
+            />
           </div>
         </section>
       </main>

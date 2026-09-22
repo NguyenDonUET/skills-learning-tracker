@@ -72,8 +72,12 @@ export function DatePicker({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
+      <PopoverContent
+        className="w-(--radix-popover-trigger-width) p-0"
+        align="start"
+      >
         <Calendar
+          className="w-full"
           mode="single"
           selected={selected}
           defaultMonth={selected}

@@ -21,7 +21,15 @@
   },
   "Common": {
     "saving": "Đang lưu…",
-    "deleting": "Đang xóa…"
+    "deleting": "Đang xóa…",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "retry": "Thử lại",
+    "skipToContent": "Bỏ qua tới nội dung",
+    "loadErrorTitle": "Không tải được dữ liệu",
+    "loadErrorDescription": "Kiểm tra kết nối và thử lại.",
+    "deleteSessionTitle": "Xóa buổi luyện này?",
+    "deleteSessionDescription": "Buổi này sẽ biến khỏi lịch sử. Giờ luyện và chuỗi ngày sẽ được cập nhật."
   },
   "Theme": {
     "toggle": "Đổi giao diện sáng/tối",
@@ -69,7 +77,8 @@
     "hrs": "giờ",
     "overallProgress": "Tiến độ tổng",
     "streak": "Chuỗi",
-    "totalHoursLabel": "Tổng giờ"
+    "totalHoursLabel": "Tổng giờ",
+    "progressAria": "Tiến độ {name}: {percent}% mục tiêu"
   },
   "Skills": {
     "title": "Kỹ năng",
@@ -143,7 +152,10 @@
     "preset15": "15m",
     "preset30": "30m",
     "preset45": "45m",
-    "preset1h": "1h"
+    "preset1h": "1h",
+    "notes": "Ghi chú",
+    "saved": "Đã lưu {duration} {skill}",
+    "savedDetail": "Tổng quan vừa được cập nhật."
   },
   "Heatmap": {
     "aria": "Hoạt động luyện tập",
@@ -161,7 +173,9 @@
     "session": "buổi",
     "sessions": "buổi",
     "less": "Ít",
-    "more": "Nhiều"
+    "more": "Nhiều",
+    "summary": "Heatmap luyện tập: {active} ngày có luyện trong {total} ngày.",
+    "keyboardHint": "Dùng phím mũi tên để di chuyển giữa các ngày. Enter hoặc Space hiện chi tiết ngày đó."
   },
   "Recent": {
     "aria": "Buổi gần đây",
@@ -200,13 +214,18 @@
     "behind": "Chậm tiến độ · còn {hours}h tuần này",
     "onTrack": "Đúng tiến độ · còn {hours}h tuần này",
     "remainingStart": "Còn {hours}h — ghi một buổi để bắt đầu nhịp",
-    "remainingPace": "Còn {hours}h · ~{days} ngày với nhịp hiện tại"
+    "remainingPace": "Còn {hours}h · ~{days} ngày với nhịp hiện tại",
+    "progressAria": "{percent}% mục tiêu"
   },
   "Streak": {
     "none": "Chưa có chuỗi",
     "oneDay": "Chuỗi 1 ngày",
     "days": "Chuỗi {count} ngày",
-    "atRisk": "Chuỗi đang nguy hiểm — luyện hôm nay để giữ"
+    "atRisk": "Chuỗi đang nguy hiểm — luyện hôm nay để giữ",
+    "active": "Chuỗi đang hoạt động",
+    "brokenStatus": "Không có chuỗi",
+    "aria": "{label}. {status}",
+    "ariaWithSkill": "{skill}: {label}. {status}"
   },
   "Loading": {
     "dashboard": "Đang tải tổng quan",

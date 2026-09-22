@@ -7,6 +7,7 @@ import type { AppMode } from "@/lib/app-paths";
 import { todayDateString } from "@/lib/dates";
 import { SKILL_COLORS, shiftSampleData } from "@/lib/stats";
 import * as api from "@/lib/tracker-api";
+import { userErrorMessage } from "@/lib/user-error";
 import type { Session, Skill, SkillGoal } from "@/types/skill";
 
 function uid(prefix: string) {
@@ -102,10 +103,8 @@ export const useTrackerStore = create<TrackerState>((set, get) => ({
         hydrated: true,
       });
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Failed to load data";
+      const message = userErrorMessage(error, "load");
       set({ hydrateError: message, hydrated: true, skills: [], sessions: [] });
-      toast.error(message);
     }
   },
 
@@ -138,8 +137,7 @@ export const useTrackerStore = create<TrackerState>((set, get) => ({
       set((s) => ({ skills: [...s.skills, skill] }));
       return skill;
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Could not create skill";
+      const message = userErrorMessage(error, "saveSkill");
       toast.error(message);
       throw error;
     }
@@ -185,8 +183,7 @@ export const useTrackerStore = create<TrackerState>((set, get) => ({
       }));
     } catch (error) {
       set({ skills: previous });
-      const message =
-        error instanceof Error ? error.message : "Could not update skill";
+      const message = userErrorMessage(error, "updateSkill");
       toast.error(message);
       throw error;
     }
@@ -208,8 +205,7 @@ export const useTrackerStore = create<TrackerState>((set, get) => ({
       await api.removeSkill(id);
     } catch (error) {
       set({ skills: previousSkills, sessions: previousSessions });
-      const message =
-        error instanceof Error ? error.message : "Could not delete skill";
+      const message = userErrorMessage(error, "deleteSkill");
       toast.error(message);
       throw error;
     }
@@ -249,8 +245,7 @@ export const useTrackerStore = create<TrackerState>((set, get) => ({
       set((s) => ({
         sessions: s.sessions.filter((item) => item.id !== optimistic.id),
       }));
-      const message =
-        error instanceof Error ? error.message : "Could not save session";
+      const message = userErrorMessage(error, "saveSession");
       toast.error(message);
       throw error;
     }
@@ -289,8 +284,7 @@ export const useTrackerStore = create<TrackerState>((set, get) => ({
       }));
     } catch (error) {
       set({ sessions: previous });
-      const message =
-        error instanceof Error ? error.message : "Could not update session";
+      const message = userErrorMessage(error, "updateSession");
       toast.error(message);
       throw error;
     }
@@ -310,8 +304,7 @@ export const useTrackerStore = create<TrackerState>((set, get) => ({
       await api.removeSession(id);
     } catch (error) {
       set({ sessions: previous });
-      const message =
-        error instanceof Error ? error.message : "Could not delete session";
+      const message = userErrorMessage(error, "deleteSession");
       toast.error(message);
       throw error;
     }

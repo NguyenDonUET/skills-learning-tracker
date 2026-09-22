@@ -21,7 +21,15 @@
   },
   "Common": {
     "saving": "Saving…",
-    "deleting": "Deleting…"
+    "deleting": "Deleting…",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "retry": "Try again",
+    "skipToContent": "Skip to content",
+    "loadErrorTitle": "Couldn't load your data",
+    "loadErrorDescription": "Check your connection and try again.",
+    "deleteSessionTitle": "Delete this session?",
+    "deleteSessionDescription": "This removes the session from your history. Hours and streaks will update."
   },
   "Theme": {
     "toggle": "Toggle color theme",
@@ -69,7 +77,8 @@
     "hrs": "hrs",
     "overallProgress": "Overall progress",
     "streak": "Streak",
-    "totalHoursLabel": "Total hours"
+    "totalHoursLabel": "Total hours",
+    "progressAria": "{name} progress: {percent}% of goal"
   },
   "Skills": {
     "title": "Skills",
@@ -143,7 +152,10 @@
     "preset15": "15m",
     "preset30": "30m",
     "preset45": "45m",
-    "preset1h": "1h"
+    "preset1h": "1h",
+    "notes": "Notes",
+    "saved": "Saved {duration} of {skill}",
+    "savedDetail": "Your dashboard just updated."
   },
   "Heatmap": {
     "aria": "Practice activity",
@@ -158,10 +170,10 @@
     "dayAria": "{date}, {duration}, {count} sessions",
     "noPractice": "No practice",
     "practiceSummary": "{duration} · {count} {sessionLabel}",
-    "session": "session",
-    "sessions": "sessions",
     "less": "Less",
-    "more": "More"
+    "more": "More",
+    "summary": "Practice heatmap: {active} active days out of {total}.",
+    "keyboardHint": "Use arrow keys to move between days. Enter or Space shows that day's detail."
   },
   "Recent": {
     "aria": "Recent sessions",
@@ -200,13 +212,18 @@
     "behind": "Behind pace · {hours}h left this week",
     "onTrack": "On track · {hours}h left this week",
     "remainingStart": "{hours}h remaining — log a session to start pacing",
-    "remainingPace": "{hours}h remaining · ~{days} days at current pace"
+    "remainingPace": "{hours}h remaining · ~{days} days at current pace",
+    "progressAria": "{percent}% of goal"
   },
   "Streak": {
     "none": "No streak",
     "oneDay": "1-day streak",
     "days": "{count}-day streak",
-    "atRisk": "Streak at risk — practice today to keep it alive"
+    "atRisk": "Streak at risk — practice today to keep it alive",
+    "active": "Active streak",
+    "brokenStatus": "No active streak",
+    "aria": "{label}. {status}",
+    "ariaWithSkill": "{skill}: {label}. {status}"
   },
   "Loading": {
     "dashboard": "Loading dashboard",

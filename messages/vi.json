@@ -15,6 +15,14 @@
     "signIn": "Đăng nhập",
     "guestInitial": "K"
   },
+  "Guest": {
+    "savePrompt": "Bạn đang xem dữ liệu mẫu. Đăng nhập Google để lưu tiến độ của riêng bạn.",
+    "signInToSave": "Đăng nhập để lưu"
+  },
+  "Common": {
+    "saving": "Đang lưu…",
+    "deleting": "Đang xóa…"
+  },
   "Theme": {
     "toggle": "Đổi giao diện sáng/tối",
     "toLight": "Chuyển sang chế độ sáng",

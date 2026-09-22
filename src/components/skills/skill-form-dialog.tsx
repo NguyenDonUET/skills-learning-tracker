@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 
+import { Spinner } from "@/components/shared/spinner";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,9 +24,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SKILL_COLORS } from "@/lib/stats";
+import { cn } from "@/lib/utils";
 import { useTrackerStore } from "@/store/tracker-store";
 import type { Skill, SkillGoal } from "@/types/skill";
-import { cn } from "@/lib/utils";
 
 type SkillFormDialogProps = {
   skill?: Skill | null;
@@ -41,6 +42,7 @@ export function SkillFormDialog({
   onOpenChange,
 }: SkillFormDialogProps) {
   const t = useTranslations("SkillForm");
+  const tCommon = useTranslations("Common");
   const addSkill = useTrackerStore((s) => s.addSkill);
   const updateSkill = useTrackerStore((s) => s.updateSkill);
 
@@ -54,6 +56,7 @@ export function SkillFormDialog({
   const [goalType, setGoalType] = useState<"weekly" | "total">("weekly");
   const [goalHours, setGoalHours] = useState("5");
   const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -71,9 +74,11 @@ export function SkillFormDialog({
       setGoalHours("5");
     }
     setError(null);
+    setSaving(false);
   }, [open, skill]);
 
-  function handleSave() {
+  async function handleSave() {
+    if (saving) return;
     const trimmed = name.trim();
     if (!trimmed) {
       setError(t("nameRequired"));
@@ -90,18 +95,31 @@ export function SkillFormDialog({
       goal = { type: goalType, targetHours: hours };
     }
 
-    if (skill) {
-      updateSkill(skill.id, { name: trimmed, color, goal });
-    } else {
-      addSkill({ name: trimmed, color, goal });
+    setSaving(true);
+    try {
+      if (skill) {
+        await updateSkill(skill.id, { name: trimmed, color, goal });
+      } else {
+        await addSkill({ name: trimmed, color, goal });
+      }
+      setOpen(false);
+    } catch {
+      // Store already toasted; keep dialog open for retry
+    } finally {
+      setSaving(false);
     }
-    setOpen(false);
   }
 
   const isEdit = Boolean(skill);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        if (saving) return;
+        setOpen(next);
+      }}
+    >
       {trigger && controlledOpen === undefined ? (
         <DialogTrigger asChild>{trigger}</DialogTrigger>
       ) : null}
@@ -111,7 +129,10 @@ export function SkillFormDialog({
           <DialogDescription>{t("description")}</DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col gap-4 py-1">
+        <fieldset
+          disabled={saving}
+          className="flex flex-col gap-4 border-0 p-0 py-1"
+        >
           <div className="space-y-2">
             <Label htmlFor="skill-name">{t("name")}</Label>
             <Input
@@ -187,11 +208,21 @@ export function SkillFormDialog({
               {error}
             </p>
           ) : null}
-        </div>
+        </fieldset>
 
         <DialogFooter>
-          <Button type="button" onClick={handleSave}>
-            {isEdit ? t("saveChanges") : t("addSkill")}
+          <Button
+            type="button"
+            onClick={() => void handleSave()}
+            disabled={saving}
+            aria-busy={saving}
+          >
+            {saving ? <Spinner /> : null}
+            {saving
+              ? tCommon("saving")
+              : isEdit
+                ? t("saveChanges")
+                : t("addSkill")}
           </Button>
         </DialogFooter>
       </DialogContent>

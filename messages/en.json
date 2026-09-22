@@ -15,6 +15,14 @@
     "signIn": "Sign in",
     "guestInitial": "G"
   },
+  "Guest": {
+    "savePrompt": "You're exploring with sample data. Sign in with Google to save your own progress.",
+    "signInToSave": "Sign in to save"
+  },
+  "Common": {
+    "saving": "Saving…",
+    "deleting": "Deleting…"
+  },
   "Theme": {
     "toggle": "Toggle color theme",
     "toLight": "Switch to light mode",

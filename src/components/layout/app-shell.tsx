@@ -2,7 +2,9 @@
 
 import type { ReactNode } from "react";
 
+import { GuestSaveBanner } from "@/components/layout/guest-save-banner";
 import { TopBar } from "@/components/layout/top-bar";
+import { ThemePreferenceSync } from "@/components/providers/theme-preference-sync";
 import { TrackerProvider } from "@/components/providers/tracker-provider";
 import { usePathname } from "@/i18n/navigation";
 import { pathnameWithoutLocale } from "@/i18n/pathname";
@@ -22,7 +24,9 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <TrackerProvider>
+      <ThemePreferenceSync />
       <TopBar />
+      <GuestSaveBanner />
       <div className="flex flex-1 flex-col bg-bg-primary">{children}</div>
     </TrackerProvider>
   );

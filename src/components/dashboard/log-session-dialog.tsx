@@ -27,6 +27,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { SkillColorDot } from "@/components/shared/skill-color-dot";
+import { Spinner } from "@/components/shared/spinner";
 import { todayDateString } from "@/lib/dates";
 import { parseDuration, type DurationParseError } from "@/lib/duration";
 import { formatDuration } from "@/lib/format";
@@ -65,6 +66,7 @@ export function LogSessionDialog({
   defaultSkillId,
 }: LogSessionDialogProps) {
   const t = useTranslations("Session");
+  const tCommon = useTranslations("Common");
   const skills = useTrackerStore((s) => s.skills);
   const sessions = useTrackerStore((s) => s.sessions);
   const addSession = useTrackerStore((s) => s.addSession);
@@ -88,6 +90,7 @@ export function LogSessionDialog({
   const [showNotes, setShowNotes] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [warnLong, setWarnLong] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const parsedDuration = useMemo(() => parseDuration(duration), [duration]);
   const durationPreview =
@@ -115,9 +118,11 @@ export function LogSessionDialog({
     }
     setError(null);
     setWarnLong(false);
+    setSaving(false);
   }, [open, session, defaultSkillId, lastSkillId]);
 
-  function handleSave() {
+  async function handleSave() {
+    if (saving) return;
     const parsed = parseDuration(duration);
     if (!parsed.ok) {
       setError(t(DURATION_ERROR_KEY[parsed.error]));
@@ -133,23 +138,30 @@ export function LogSessionDialog({
     }
 
     setWarnLong(parsed.warnLong);
+    setSaving(true);
 
-    if (session) {
-      updateSession(session.id, {
-        skillId,
-        durationMinutes: parsed.minutes,
-        date,
-        notes,
-      });
-    } else {
-      addSession({
-        skillId,
-        durationMinutes: parsed.minutes,
-        date,
-        notes,
-      });
+    try {
+      if (session) {
+        await updateSession(session.id, {
+          skillId,
+          durationMinutes: parsed.minutes,
+          date,
+          notes,
+        });
+      } else {
+        await addSession({
+          skillId,
+          durationMinutes: parsed.minutes,
+          date,
+          notes,
+        });
+      }
+      setOpen(false);
+    } catch {
+      // Store already toasted; keep dialog open for retry
+    } finally {
+      setSaving(false);
     }
-    setOpen(false);
   }
 
   const trigger = fab ? (
@@ -174,7 +186,13 @@ export function LogSessionDialog({
   const isEdit = Boolean(session);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        if (saving) return;
+        setOpen(next);
+      }}
+    >
       {!isEdit && controlledOpen === undefined ? (
         <DialogTrigger asChild>{trigger}</DialogTrigger>
       ) : null}
@@ -186,7 +204,10 @@ export function LogSessionDialog({
           <DialogDescription>{t("description")}</DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col gap-4 py-1">
+        <fieldset
+          disabled={saving}
+          className="flex flex-col gap-4 border-0 p-0 py-1"
+        >
           <div className="space-y-2">
             <Label htmlFor="session-skill">{t("skill")}</Label>
             <Combobox
@@ -321,11 +342,21 @@ export function LogSessionDialog({
               {error}
             </p>
           ) : null}
-        </div>
+        </fieldset>
 
         <DialogFooter>
-          <Button type="button" onClick={handleSave} disabled={skills.length === 0}>
-            {isEdit ? t("saveChanges") : t("saveSession")}
+          <Button
+            type="button"
+            onClick={() => void handleSave()}
+            disabled={skills.length === 0 || saving}
+            aria-busy={saving}
+          >
+            {saving ? <Spinner /> : null}
+            {saving
+              ? tCommon("saving")
+              : isEdit
+                ? t("saveChanges")
+                : t("saveSession")}
           </Button>
         </DialogFooter>
       </DialogContent>

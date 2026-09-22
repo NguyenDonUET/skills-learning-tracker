@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { SkillFormDialog } from "@/components/skills/skill-form-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
 import { SkillColorDot } from "@/components/shared/skill-color-dot";
+import { Spinner } from "@/components/shared/spinner";
 import { StreakBadge } from "@/components/shared/streak-badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,12 +29,14 @@ import type { Skill } from "@/types/skill";
 
 export default function SkillsPage() {
   const t = useTranslations("Skills");
+  const tCommon = useTranslations("Common");
   const { href } = useAppMode();
   const { summaries } = useDashboardData();
   const deleteSkill = useTrackerStore((s) => s.deleteSkill);
 
   const [editSkill, setEditSkill] = useState<Skill | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Skill | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   return (
     <div className="mx-auto flex w-full max-w-page flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8">
@@ -139,6 +142,7 @@ export default function SkillsPage() {
       <AlertDialog
         open={Boolean(deleteTarget)}
         onOpenChange={(next) => {
+          if (deleting) return;
           if (!next) setDeleteTarget(null);
         }}
       >
@@ -152,15 +156,25 @@ export default function SkillsPage() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
+            <AlertDialogCancel disabled={deleting}>{t("cancel")}</AlertDialogCancel>
             <AlertDialogAction
               variant="destructive"
-              onClick={() => {
-                if (deleteTarget) deleteSkill(deleteTarget.id);
-                setDeleteTarget(null);
+              disabled={deleting}
+              aria-busy={deleting}
+              onClick={(event) => {
+                event.preventDefault();
+                if (!deleteTarget || deleting) return;
+                setDeleting(true);
+                void deleteSkill(deleteTarget.id)
+                  .then(() => setDeleteTarget(null))
+                  .catch(() => {
+                    // Store toasted; keep dialog open
+                  })
+                  .finally(() => setDeleting(false));
               }}
             >
-              {t("deleteSkill")}
+              {deleting ? <Spinner /> : null}
+              {deleting ? tCommon("deleting") : t("deleteSkill")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

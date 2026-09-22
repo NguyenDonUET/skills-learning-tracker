@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 
 import {
@@ -49,6 +49,8 @@ export function PracticeHeatmap({
   const t = useTranslations("Heatmap");
   const locale = useLocale();
   const [activeDate, setActiveDate] = useState<string | null>(null);
+  const [focusedDate, setFocusedDate] = useState<string | null>(null);
+  const cellRefs = useRef(new Map<string, HTMLButtonElement>());
 
   const allOption: SkillFilterOption = useMemo(
     () => ({ id: ALL_SKILLS, name: t("allSkills") }),
@@ -60,10 +62,53 @@ export function PracticeHeatmap({
     [data.days, activeDate],
   );
 
-  const monthGroups = useMemo(
-    () => groupHeatmapByMonth(data.days),
+  const monthGroups = useMemo(() => {
+    const groups = groupHeatmapByMonth(data.days);
+    let weekIndex = 0;
+    return groups.map((group) => ({
+      ...group,
+      weeks: group.weeks.map((week) => {
+        const delay = weekIndex * 18;
+        weekIndex += 1;
+        return { days: week, delay };
+      }),
+    }));
+  }, [data.days]);
+
+  const defaultFocus = useMemo(
+    () =>
+      data.days.find((day) => day.isToday && !day.isFuture)?.date ??
+      data.days.find((day) => !day.isFuture)?.date ??
+      null,
     [data.days],
   );
+  const focusDate = focusedDate ?? defaultFocus;
+
+  const summary = useMemo(() => {
+    const past = data.days.filter((day) => !day.isFuture);
+    return {
+      active: past.filter((day) => day.totalMinutes > 0).length,
+      total: past.length,
+    };
+  }, [data.days]);
+
+  function moveFocus(from: string, key: string) {
+    const index = data.days.findIndex((day) => day.date === from);
+    if (index < 0) return;
+    const row = index % 7;
+    const col = Math.floor(index / 7);
+    let nextRow = row;
+    let nextCol = col;
+    if (key === "ArrowUp") nextRow -= 1;
+    if (key === "ArrowDown") nextRow += 1;
+    if (key === "ArrowLeft") nextCol -= 1;
+    if (key === "ArrowRight") nextCol += 1;
+    if (nextRow < 0 || nextRow > 6 || nextCol < 0) return;
+    const next = data.days[nextCol * 7 + nextRow];
+    if (!next || next.isFuture) return;
+    setFocusedDate(next.date);
+    cellRefs.current.get(next.date)?.focus();
+  }
 
   const filterItems = useMemo(
     () => [allOption, ...skills],
@@ -129,6 +174,11 @@ export function PracticeHeatmap({
         </div>
       </div>
 
+      <p className="sr-only">
+        {t("summary", { active: summary.active, total: summary.total })}{" "}
+        {t("keyboardHint")}
+      </p>
+
       <div className="overflow-x-auto pb-1">
         <div
           className="inline-flex flex-col gap-3"
@@ -144,17 +194,41 @@ export function PracticeHeatmap({
                 <div className="flex gap-1">
                   {group.weeks.map((week) => (
                     <div
-                      key={week[0]?.date ?? group.monthKey}
-                      className="flex flex-col gap-1"
+                      key={week.days[0]?.date ?? group.monthKey}
+                      className="heatmap-enter flex flex-col gap-1"
+                      style={{ animationDelay: `${week.delay}ms` }}
                     >
-                      {week.map((day) => (
+                      {week.days.map((day) => (
                         <HeatmapCell
                           key={day.date}
+                          ref={(node) => {
+                            if (node) cellRefs.current.set(day.date, node);
+                            else cellRefs.current.delete(day.date);
+                          }}
                           role="listitem"
                           size="sm"
                           level={day.level}
                           isFuture={day.isFuture}
                           isToday={day.isToday}
+                          tabIndex={
+                            day.isFuture
+                              ? undefined
+                              : day.date === focusDate
+                                ? 0
+                                : -1
+                          }
+                          onKeyDown={(event) => {
+                            if (
+                              event.key !== "ArrowUp" &&
+                              event.key !== "ArrowDown" &&
+                              event.key !== "ArrowLeft" &&
+                              event.key !== "ArrowRight"
+                            ) {
+                              return;
+                            }
+                            event.preventDefault();
+                            moveFocus(day.date, event.key);
+                          }}
                           onClick={() =>
                             setActiveDate((prev) =>
                               prev === day.date ? null : day.date,

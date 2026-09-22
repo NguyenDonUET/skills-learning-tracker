@@ -3,6 +3,7 @@
 import { Flame, Clock, ListChecks } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { AnimatedValue } from "@/components/shared/animated-value";
 import { StreakBadge } from "@/components/shared/streak-badge";
 import { formatHours } from "@/lib/format";
 
@@ -31,7 +32,12 @@ export function OverallStats({
           <Flame className="size-3.5 text-streak" aria-hidden />
           {t("streak")}
         </span>
-        <StreakBadge days={currentStreak} status={streakStatus} size="lg" />
+        <StreakBadge
+          days={currentStreak}
+          status={streakStatus}
+          size="lg"
+          announce
+        />
       </div>
       <div className="flex flex-col gap-1">
         <span className="inline-flex items-center gap-1.5 text-xs text-text-tertiary">
@@ -39,7 +45,7 @@ export function OverallStats({
           {t("totalHoursLabel")}
         </span>
         <p className="font-heading text-2xl font-bold text-text-primary sm:text-3xl">
-          {formatHours(totalHours)}
+          <AnimatedValue value={totalHours} format={formatHours} />
         </p>
       </div>
       <div className="flex flex-col gap-1">
@@ -48,7 +54,7 @@ export function OverallStats({
           {t("sessions")}
         </span>
         <p className="font-heading text-2xl font-bold text-text-primary sm:text-3xl">
-          {sessionCount}
+          <AnimatedValue value={sessionCount} />
         </p>
       </div>
     </section>

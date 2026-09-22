@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
+import { AnimatedValue } from "@/components/shared/animated-value";
 import { ProgressRing } from "@/components/shared/progress-ring";
 import { SkillColorDot } from "@/components/shared/skill-color-dot";
 import { StreakBadge } from "@/components/shared/streak-badge";
@@ -23,7 +24,7 @@ export function FeaturedSkillCard({ summary }: FeaturedSkillCardProps) {
     goalProgress != null ? Math.round(goalProgress * 100) : null;
 
   return (
-    <article className="bg-surface shadow-md flex h-full flex-col gap-6 rounded-xl border border-border-subtle p-6 sm:p-8">
+    <article className="bg-surface shadow-md hover:shadow-lg motion-safe:hover:-translate-y-0.5 flex h-full flex-col gap-6 rounded-xl border border-border-subtle p-6 motion-safe:transition-[transform,box-shadow] motion-safe:duration-200 motion-safe:ease-out sm:p-8">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <p className="text-xs font-medium tracking-wide text-text-tertiary uppercase">
@@ -39,7 +40,12 @@ export function FeaturedSkillCard({ summary }: FeaturedSkillCardProps) {
             </Link>
           </h2>
         </div>
-        <StreakBadge days={currentStreak} status={streakStatus} size="md" />
+        <StreakBadge
+          days={currentStreak}
+          status={streakStatus}
+          size="md"
+          skillName={skill.name}
+        />
       </div>
 
       <div className="flex flex-1 flex-col items-center justify-center gap-6 sm:flex-row sm:gap-10">
@@ -49,10 +55,17 @@ export function FeaturedSkillCard({ summary }: FeaturedSkillCardProps) {
             size={140}
             strokeWidth={12}
             color={skill.color}
+            label={t("progressAria", {
+              name: skill.name,
+              percent: percent ?? 0,
+            })}
           >
             <div className="text-center">
               <p className="font-heading text-2xl font-bold text-text-primary">
-                {percent}%
+                <AnimatedValue
+                  value={(percent ?? 0)}
+                  format={(next) => `${Math.round(next)}%`}
+                />
               </p>
               <p className="text-xs text-text-tertiary">
                 {skill.goal?.type === "weekly" ? t("ofWeeklyGoal") : t("ofGoal")}
@@ -62,7 +75,7 @@ export function FeaturedSkillCard({ summary }: FeaturedSkillCardProps) {
         ) : (
           <div className="text-center">
             <p className="font-heading text-3xl font-bold text-text-primary">
-              {formatHours(totalHours)}
+              <AnimatedValue value={totalHours} format={formatHours} />
             </p>
             <p className="text-sm text-text-secondary">{t("totalHours")}</p>
           </div>
@@ -72,13 +85,13 @@ export function FeaturedSkillCard({ summary }: FeaturedSkillCardProps) {
           <div>
             <dt className="text-xs text-text-tertiary">{t("hours")}</dt>
             <dd className="font-heading text-2xl font-bold text-text-primary">
-              {formatHours(totalHours)}
+              <AnimatedValue value={totalHours} format={formatHours} />
             </dd>
           </div>
           <div>
             <dt className="text-xs text-text-tertiary">{t("sessions")}</dt>
             <dd className="font-heading text-2xl font-bold text-text-primary">
-              {sessionCount}
+              <AnimatedValue value={sessionCount} />
             </dd>
           </div>
         </dl>
